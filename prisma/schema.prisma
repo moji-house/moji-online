@@ -1,0 +1,273 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  firstName         String
+  lastName          String
+  email             String    @unique
+  password          String
+  googleId          String?
+  phone             String?
+  birthDate         DateTime?
+  showBirthDate     Boolean   @default(false)
+  bio               String?
+  education         String?
+  currentCompany    String?
+  previousCompanies String?
+  realEstateExperience String?
+  lineContact       String?
+  avatar            String?
+  backgroundImage   String?
+  voteCount         Int       @default(0)
+  followers         Int       @default(0)
+  propertiesCount   Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  roles             UserRole[]
+  properties        Property[]
+  comments          Comment[]
+  likes             Like[]
+  votes             Vote[]
+  propertyVotes     PropertyVote[]
+  commentReplies    CommentReply[]
+  likeComments      LikeComment[]
+  coinBalance       CoinBalance?
+  coinTransactions  CoinTx[]
+  accounts          Account[]
+  sessions          Session[]
+}
+
+model UserRole {
+  id        BigInt   @id @default(autoincrement())
+  userId    String
+  role      String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Property {
+  id                  BigInt         @id @default(autoincrement())
+  title               String
+  description         String
+  price               Float
+  address             String
+  city                String
+  state               String?
+  zip_code            String?
+  bedrooms            Int
+  bathrooms           Int
+  square_feet         Float
+  status              String         @default("active")
+  phone               String?
+  line_id             String?
+  google_map_link     String?
+  co_agent_commission Float?
+  co_agent_incentive  String?
+  co_agent_notes      String?
+  points              Int            @default(0)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  userId              String
+  user                User           @relation(fields: [userId], references: [id])
+  images              PropertyImage[]
+  videos              PropertyVideo[]
+  documents           PropertyDocument[]
+  votes               Vote[]
+  propertyVotes       PropertyVote[]
+  comments            Comment[]
+  likes               Like[]
+  commentReplies      CommentReply[]
+  likeComments        LikeComment[]
+  coinTransactions    CoinTx[]
+}
+
+model PropertyImage {
+  id          BigInt   @id @default(autoincrement())
+  imageUrl    String
+  isMain      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  propertyId  BigInt
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model PropertyVideo {
+  id          BigInt   @id @default(autoincrement())
+  videoUrl    String
+  title       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  propertyId  BigInt
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+}
+
+model PropertyDocument {
+  id          BigInt   @id @default(autoincrement())
+  documentUrl String
+  title       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  propertyId  BigInt
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+}
+
+model Vote {
+  id         BigInt   @id @default(autoincrement())
+  propertyId BigInt
+  userId     String
+  voteType   String   @db.VarChar(4)
+  property   Property @relation(fields: [propertyId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([propertyId, userId])
+}
+
+model PropertyVote {
+  id         BigInt   @id @default(autoincrement())
+  propertyId BigInt
+  userId     String
+  voteType   String   @db.VarChar(4)
+  property   Property @relation(fields: [propertyId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Comment {
+  id         BigInt   @id @default(autoincrement())
+  content    String   @db.Text
+  userId     String
+  propertyId BigInt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  likes      LikeComment[]
+  replies    Comment[] @relation("CommentReplies")
+  commentReplies CommentReply[] @relation("CommentToReply")
+  parentId   BigInt?
+  parent     Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Like {
+  id         BigInt   @id @default(autoincrement())
+  propertyId BigInt
+  userId     String
+  property   Property @relation(fields: [propertyId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([propertyId, userId])
+}
+
+model CommentReply {
+  id        BigInt   @id @default(autoincrement())
+  content   String   @db.Text
+  userId    String
+  commentId BigInt
+  propertyId BigInt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user      User     @relation(fields: [userId], references: [id])
+  comment   Comment  @relation("CommentToReply", fields: [commentId], references: [id])
+  property  Property @relation(fields: [propertyId], references: [id])
+  likes     LikeComment[] @relation("ReplyToLike")
+
+  @@index([userId])
+  @@index([commentId])
+  @@index([propertyId])
+}
+
+model LikeComment {
+  id        BigInt   @id @default(autoincrement())
+  userId    String
+  commentId BigInt
+  replyId   BigInt?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment   Comment?  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  reply     CommentReply? @relation("ReplyToLike", fields: [replyId], references: [id])
+  property  Property? @relation(fields: [propertyId], references: [id])
+  propertyId BigInt?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, commentId])
+}
+
+model CoinBalance {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  balance   Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  transactions CoinTx[] @relation("CoinBalanceToTx")
+
+  @@map("coin_balances")
+}
+
+model CoinTx {
+  id          String   @id @default(cuid())
+  type        String   // reward, purchase, vote
+  amount      Float
+  description String
+  propertyId  BigInt?
+  property    Property? @relation(fields: [propertyId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  coinBalanceId String
+  coinBalance   CoinBalance @relation("CoinBalanceToTx", fields: [coinBalanceId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@map("coin_transactions")
+}
+
+model Account {
+  id                String    @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

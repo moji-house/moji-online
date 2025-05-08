@@ -1,0 +1,260 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 17.4
+-- Dumped by pg_dump version 17.4
+
+-- Started on 2025-04-07 20:39:40
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 4900 (class 0 OID 17383)
+-- Dependencies: 219
+-- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public."User" VALUES (2, 'Jane', 'Smith', 'jane.smith@example.com', '$2b$10$K7L1OJ45/4Y2nIvhRVpCe.FSmhDdWoXehVzJptJ/op0lSsvqNu.Vm', '1985-05-15 00:00:00', false, 'Property owner and investor with a portfolio of residential properties.', 'Master of Real Estate Development, Thammasat University', 'Smith Properties', 'GHI Investments', '15 years of property investment experience', 'https://line.me/ti/p/~janesmith', 'https://randomuser.me/api/portraits/women/1.jpg', 'https://images.unsplash.com/photo-1560518883-ce09059eeffa', 200, 300, 15, '2025-04-02 07:40:18.001', '2025-04-02 07:40:18.001', NULL, NULL);
+INSERT INTO public."User" VALUES (3, 'Michael', 'Brown', 'michael.brown@example.com', '$2b$10$K7L1OJ45/4Y2nIvhRVpCe.FSmhDdWoXehVzJptJ/op0lSsvqNu.Vm', '1988-08-20 00:00:00', true, 'Real estate consultant specializing in commercial properties.', 'Bachelor of Architecture, King Mongkut''s University of Technology Thonburi', 'Brown Real Estate Consulting', 'JKL Properties, MNO Realty', '12 years of commercial real estate consulting', 'https://line.me/ti/p/~michaelbrown', 'https://randomuser.me/api/portraits/men/2.jpg', 'https://images.unsplash.com/photo-1560518883-ce09059eeffa', 180, 250, 30, '2025-04-02 07:40:18.004', '2025-04-02 07:40:18.004', NULL, NULL);
+INSERT INTO public."User" VALUES (4, 'w', 'asuwan alutech', 'wsalutech@gmail.com', 'google_login', NULL, false, NULL, NULL, NULL, NULL, NULL, NULL, 'https://lh3.googleusercontent.com/a/ACg8ocLygv6v9FQpFjBozqeLsY_uWHcl4j2Sa1X3z7fpqY4WSRMFDQ4=s96-c', NULL, 0, 0, 0, '2025-04-04 17:42:06.398', '2025-04-04 17:42:06.398', '116953541059702876316', NULL);
+INSERT INTO public."User" VALUES (1, 'John', 'Doe', 'apc9041@gmail.com', '$2b$10$K7L1OJ45/4Y2nIvhRVpCe.FSmhDdWoXehVzJptJ/op0lSsvqNu.Vm', '1990-01-01 00:00:00', true, 'Experienced real estate agent with 10 years in the industry.', 'Bachelor of Business Administration, Chulalongkorn University', 'ABC Real Estate', 'XYZ Properties, DEF Realty', 'Specialized in luxury properties and commercial real estate', 'https://line.me/ti/p/~johndoe', 'https://lh3.googleusercontent.com/a/ACg8ocL090efabzsJ9ysr1lmIhE-p2yG8VQgjRHPZ-zyQWvNQYbU92Q=s96-c', 'https://images.unsplash.com/photo-1560518883-ce09059eeffa', 150, 200, 29, '2025-04-02 07:40:17.985', '2025-04-05 08:43:04.869', '112218925424134660074', NULL);
+
+
+--
+-- TOC entry 4904 (class 0 OID 17407)
+-- Dependencies: 223
+-- Data for Name: Property; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public."Property" VALUES (8, 'คอนโดมิเนียมหรูใจกลางเมือง', 'คอนโดมิเนียมหรู ตั้งอยู่ใจกลางเมือง ใกล้ห้างสรรพสินค้าและรถไฟฟ้า BTS', 15000000, 0, 1, '2025-04-02 22:48:42.19', '2025-04-02 22:48:42.19', '123 ถนนสุขุมวิท แขวงคลองเตยเหนือ', 2, 2, 'กรุงเทพมหานคร', 3, 'รถรับส่งฟรี', 'พร้อมเฟอร์นิเจอร์', 'https://maps.google.com/...', 'line123456', '0812345678', 45.5, 'เขตวัฒนา', 'active', '10110');
+INSERT INTO public."Property" VALUES (9, 'บ้านเดี่ยวสไตล์โมเดิร์น', 'บ้านเดี่ยวสไตล์โมเดิร์น เน้นความเรียบง่าย ใช้พื้นที่อย่างคุ้มค่า', 25000000, 0, 2, '2025-04-02 22:48:42.19', '2025-04-02 22:48:42.19', '456 ถนนลาดพร้าว แขวงจอมพล', 2, 3, 'กรุงเทพมหานคร', 2.5, 'มีสระว่ายน้ำส่วนตัว', 'พร้อมสวนสวย', 'https://maps.google.com/...', 'line234567', '0823456789', 120, 'จตุจักร', 'active', '10900');
+INSERT INTO public."Property" VALUES (10, 'ทาวน์เฮ้าส์ 2 ชั้น', 'ทาวน์เฮ้าส์ 2 ชั้น ดีไซน์ทันสมัย เน้นความเป็นส่วนตัว', 18000000, 0, 3, '2025-04-02 22:48:42.19', '2025-04-02 22:48:42.19', '789 ถนนรามคำแหง แขวงหัวหมาก', 2, 3, 'กรุงเทพมหานคร', 2, 'มีที่จอดรถ 2 คัน', 'พร้อมเฟอร์นิเจอร์บางส่วน', 'https://maps.google.com/...', 'line345678', '0834567890', 90, 'บางกะปิ', 'active', '10240');
+INSERT INTO public."Property" VALUES (11, 'บ้านสไตล์โมเดิร์น พร้อมเฉลียงสำหรับนั่งเล่น', '🏡บ้านสไตล์โมเดิร์น พร้อมเฉลียงสำหรับนั่งเล่น ขนาด ...
+-3 ห้องนอน 
+-2ห้องน้ำ 
+-1 ห้องครัว 
+-1 ห้องโถง
+...ระเบียงหน้าบ้านไว้จิบชากาแฟหรือปาร์ตี้พื้นที่ใช้สอย 60-120 ตรม.', 16000000, 0, 1, '2025-04-02 16:56:56.99', '2025-04-02 16:56:56.99', '82 moo7 chalong', 1, 1, 'Bangkok', 10, '0810810049', '10', 'https://goo.gl/maps/7hsWgY7qnpBYfZRv7?g_st=ac', 'https://line.me/ti/p/MclMbZ6YTC', '0810810049', 149, NULL, 'active', NULL);
+INSERT INTO public."Property" VALUES (12, 'บ้านสไตล์โมเดิร์น พร้อมเฉลียงสำหรับนั่งเล่น', '🏡บ้านสไตล์โมเดิร์น พร้อมเฉลียงสำหรับนั่งเล่น ขนาด ...
+-3 ห้องนอน 
+-2ห้องน้ำ 
+-1 ห้องครัว 
+-1 ห้องโถง
+...ระเบียงหน้าบ้านไว้จิบชากาแฟหรือปาร์ตี้พื้นที่ใช้สอย 60-120 ตรม.', 16000000, 0, 1, '2025-04-02 17:00:57.992', '2025-04-02 17:00:57.992', '82 moo7 chalong', 1, 1, 'Bangkok', 10, '0810810049', '10', 'https://goo.gl/maps/7hsWgY7qnpBYfZRv7?g_st=ac', 'https://line.me/ti/p/MclMbZ6YTC', '0810810049', 149, NULL, 'active', NULL);
+INSERT INTO public."Property" VALUES (13, 'บ้านสไตล์โมเดิร์น พร้อมเฉลียงสำหรับนั่งเล่น', '🏡บ้านสไตล์โมเดิร์น พร้อมเฉลียงสำหรับนั่งเล่น ขนาด ...
+-3 ห้องนอน 
+-2ห้องน้ำ 
+-1 ห้องครัว 
+-1 ห้องโถง
+...ระเบียงหน้าบ้านไว้จิบชากาแฟหรือปาร์ตี้พื้นที่ใช้สอย 60-120 ตรม.', 16000000, 0, 1, '2025-04-02 17:03:56.931', '2025-04-02 17:03:56.931', '82 moo7 chalong', 1, 1, 'Bangkok', 10, '0810810049', '10', 'https://goo.gl/maps/7hsWgY7qnpBYfZRv7?g_st=ac', 'https://line.me/ti/p/MclMbZ6YTC', '0810810049', 149, NULL, 'active', NULL);
+INSERT INTO public."Property" VALUES (16, 'Images Test', 'Images Test', 25000000, 5000, 1, '2025-04-05 14:40:28.029', '2025-04-06 12:42:53.017', '82 moo7 chalong', 1, 1, 'Phuket town', 10, '100000', '5555', 'https://goo.gl/maps/7hsWgY7qnpBYfZRv7?g_st=ac', 'https://line.me/ti/p/MclMbZ6YTC', '0969894441', 450, NULL, 'active', NULL);
+INSERT INTO public."Property" VALUES (15, 'บ้านสวยอีกแล้วจ้า', 'เกดหเกดเ', 564554654, 1200, 1, '2025-04-05 08:43:04.839', '2025-04-06 12:43:02.912', '82 moo7 chalong', 1, 1, 'Bangkok', 10, '100000', '5555', 'https://goo.gl/maps/7hsWgY7qnpBYfZRv7?g_st=ac', 'https://line.me/ti/p/MclMbZ6YTC', '0969894441', 456, NULL, 'active', NULL);
+INSERT INTO public."Property" VALUES (14, 'บ้านสวย', 'กดกดก', 4654, 1, 1, '2025-04-05 08:37:33.218', '2025-04-06 15:48:14.847', '82 moo7 chalong', 1, 1, 'Phuket town', 10, NULL, NULL, 'https://goo.gl/maps/7hsWgY7qnpBYfZRv7?g_st=ac', 'https://line.me/ti/p/MclMbZ6YTC', '0969894441', 455, NULL, 'active', NULL);
+INSERT INTO public."Property" VALUES (17, 'Images Test', 'Images Test', 25000000, 10012, 1, '2025-04-05 14:42:25.937', '2025-04-07 07:19:23.639', '82 moo7 chalong', 1, 1, 'Phuket town', 10, '100000', '5555', 'https://goo.gl/maps/7hsWgY7qnpBYfZRv7?g_st=ac', 'https://line.me/ti/p/MclMbZ6YTC', '0969894441', 450, NULL, 'active', NULL);
+
+
+--
+-- TOC entry 4912 (class 0 OID 17448)
+-- Dependencies: 231
+-- Data for Name: Comment; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public."Comment" VALUES (1, 'Hello
+', 17, 1, '2025-04-07 08:49:08.954');
+INSERT INTO public."Comment" VALUES (2, 'Hello too', 17, 1, '2025-04-07 09:07:04.714');
+INSERT INTO public."Comment" VALUES (3, '5555
+', 17, 1, '2025-04-07 12:07:33.518');
+INSERT INTO public."Comment" VALUES (4, 'hi hi', 17, 1, '2025-04-07 12:07:58.563');
+
+
+--
+-- TOC entry 4916 (class 0 OID 18698)
+-- Dependencies: 235
+-- Data for Name: CommentReply; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 4914 (class 0 OID 17458)
+-- Dependencies: 233
+-- Data for Name: Like; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public."Like" VALUES (2, 16, 1, '2025-04-06 17:37:39.039');
+INSERT INTO public."Like" VALUES (3, 15, 1, '2025-04-06 17:37:46.452');
+INSERT INTO public."Like" VALUES (9, 17, 1, '2025-04-07 08:35:05.158');
+
+
+--
+-- TOC entry 4918 (class 0 OID 18726)
+-- Dependencies: 237
+-- Data for Name: LikeComment; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 4906 (class 0 OID 17418)
+-- Dependencies: 225
+-- Data for Name: PropertyImage; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public."PropertyImage" VALUES (1, 16, '2025-04-05 14:40:28.029', 'https://res.cloudinary.com/ddvuxyayd/image/upload/v1743864024/properties/gbyu3tsfub5ezwzdjs3p.jpg', false, '2025-04-05 14:40:28.029');
+INSERT INTO public."PropertyImage" VALUES (2, 16, '2025-04-05 14:40:28.029', 'https://res.cloudinary.com/ddvuxyayd/image/upload/v1743864026/properties/t2jxkurbwqu0vrkyfrna.jpg', false, '2025-04-05 14:40:28.029');
+INSERT INTO public."PropertyImage" VALUES (3, 16, '2025-04-05 14:40:28.029', 'https://res.cloudinary.com/ddvuxyayd/image/upload/v1743864027/properties/ufqeekrh4oojsigwsysy.jpg', false, '2025-04-05 14:40:28.029');
+INSERT INTO public."PropertyImage" VALUES (4, 17, '2025-04-05 14:42:25.937', 'https://res.cloudinary.com/ddvuxyayd/image/upload/v1743864143/properties/yamgbswdd3unme0wjv1j.jpg', false, '2025-04-05 14:42:25.937');
+INSERT INTO public."PropertyImage" VALUES (5, 17, '2025-04-05 14:42:25.937', 'https://res.cloudinary.com/ddvuxyayd/image/upload/v1743864144/properties/ovothsyszlyovjsorkc1.jpg', false, '2025-04-05 14:42:25.937');
+INSERT INTO public."PropertyImage" VALUES (6, 17, '2025-04-05 14:42:25.937', 'https://res.cloudinary.com/ddvuxyayd/image/upload/v1743864145/properties/gjejqvl3skmdvxdlxoha.jpg', false, '2025-04-05 14:42:25.937');
+
+
+--
+-- TOC entry 4910 (class 0 OID 17438)
+-- Dependencies: 229
+-- Data for Name: PropertyVote; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public."PropertyVote" VALUES (5, 16, 1, 'post', '2025-04-06 19:42:53.012');
+INSERT INTO public."PropertyVote" VALUES (6, 15, 1, 'post', '2025-04-06 19:43:02.882');
+INSERT INTO public."PropertyVote" VALUES (13, 14, 1, 'post', '2025-04-06 22:48:14.805');
+INSERT INTO public."PropertyVote" VALUES (1, 17, 1, 'post', '2025-04-07 14:19:23.635');
+
+
+--
+-- TOC entry 4902 (class 0 OID 17397)
+-- Dependencies: 221
+-- Data for Name: UserRole; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public."UserRole" VALUES (1, 1, 'Agent', '2025-04-02 07:40:17.985');
+INSERT INTO public."UserRole" VALUES (2, 1, 'Owner', '2025-04-02 07:40:17.985');
+INSERT INTO public."UserRole" VALUES (3, 2, 'Agent', '2025-04-02 07:40:18.001');
+INSERT INTO public."UserRole" VALUES (4, 2, 'Owner', '2025-04-02 07:40:18.001');
+INSERT INTO public."UserRole" VALUES (5, 3, 'Agent', '2025-04-02 07:40:18.004');
+INSERT INTO public."UserRole" VALUES (6, 3, 'Owner', '2025-04-02 07:40:18.004');
+
+
+--
+-- TOC entry 4908 (class 0 OID 17428)
+-- Dependencies: 227
+-- Data for Name: Vote; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 4898 (class 0 OID 16749)
+-- Dependencies: 217
+-- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public._prisma_migrations VALUES ('70c459c1-25f7-4504-a917-9edfec5b5082', '62a4539aa12646a6339851803fe2eaefff1e0ec3de2b37953fede57d7237c6f2', '2025-04-02 13:52:20.136308+07', '20250402065219_init', NULL, NULL, '2025-04-02 13:52:19.969561+07', 1);
+
+
+--
+-- TOC entry 4924 (class 0 OID 0)
+-- Dependencies: 234
+-- Name: CommentReply_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."CommentReply_id_seq"', 1, false);
+
+
+--
+-- TOC entry 4925 (class 0 OID 0)
+-- Dependencies: 230
+-- Name: Comment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Comment_id_seq"', 4, true);
+
+
+--
+-- TOC entry 4926 (class 0 OID 0)
+-- Dependencies: 236
+-- Name: LikeComment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."LikeComment_id_seq"', 1, false);
+
+
+--
+-- TOC entry 4927 (class 0 OID 0)
+-- Dependencies: 232
+-- Name: Like_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Like_id_seq"', 9, true);
+
+
+--
+-- TOC entry 4928 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: PropertyImage_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."PropertyImage_id_seq"', 6, true);
+
+
+--
+-- TOC entry 4929 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: PropertyVote_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."PropertyVote_id_seq"', 17, true);
+
+
+--
+-- TOC entry 4930 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: Property_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Property_id_seq"', 17, true);
+
+
+--
+-- TOC entry 4931 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: UserRole_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."UserRole_id_seq"', 6, true);
+
+
+--
+-- TOC entry 4932 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: User_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."User_id_seq"', 3, true);
+
+
+--
+-- TOC entry 4933 (class 0 OID 0)
+-- Dependencies: 226
+-- Name: Vote_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Vote_id_seq"', 1, false);
+
+
+-- Completed on 2025-04-07 20:39:40
+
+--
+-- PostgreSQL database dump complete
+--
+
