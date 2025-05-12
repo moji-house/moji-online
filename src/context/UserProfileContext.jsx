@@ -11,24 +11,24 @@ export function UserProfileProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchProfiles = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch("/api/users/profiles");
-        if (!response.ok) {
-          throw new Error("Failed to fetch user profiles");
-        }
-        const data = await response.json();
-        setUserProfiles(data);
-      } catch (error) {
-        console.error("Error fetching user profiles:", error);
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
+  const fetchProfiles = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/users/profiles");
+      if (!response.ok) {
+        throw new Error("Failed to fetch user profiles");
       }
-    };
+      const data = await response.json();
+      setUserProfiles(data);
+    } catch (error) {
+      console.error("Error fetching user profiles:", error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProfiles();
   }, []);
 
@@ -127,6 +127,7 @@ export function UserProfileProvider({ children }) {
     userProfiles,
     isLoading,
     error,
+    fetchProfiles,
     updateProfile,
     handleVote,
     handleFollow,

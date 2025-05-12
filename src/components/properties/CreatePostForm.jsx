@@ -31,7 +31,7 @@ export default function CreatePostForm() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const fileInputRef = useRef(null);
-  const { userProfiles } = useUserProfile();
+  const { userProfiles, fetchProfiles } = useUserProfile();
 
   // หา current user profile
   const currentUserProfile = userProfiles?.find(
@@ -410,6 +410,7 @@ export default function CreatePostForm() {
             toast.success(
               `ได้รับ 5,000 coins สำหรับการลงประกาศ! (ยอดคงเหลือ: ${coinData.balance} coins)`
             );
+            await fetchProfiles()
           }
         } catch (error) {
           console.error("Error updating coins:", error);

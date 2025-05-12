@@ -24,14 +24,14 @@ export async function GET() {
     });
 
     // console.log('user', user)
-    
+
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // แปลง BigInt เป็น Number
     const balance = user.coinBalance?.balance ? Number(user.coinBalance.balance) : 0;
-    
+
     // แปลง transactions ให้ถูกต้อง
     const transactions = user.coinBalance?.transactions?.map(transaction => ({
       ...transaction,
@@ -52,20 +52,29 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { userId, amount, type, description, propertyId } = await request.json();
+    const { amount, type, description, propertyId } = await request.json();
+    const session = await getServerSession(authOptions);
 
-    // ตรวจสอบว่ามี userId หรือไม่
-    if (!userId) {
-      return NextResponse.json(
-        { error: "User ID is required" },
-        { status: 400 }
-      );
-    }
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include: {
+        coinBalance: {
+          include: {
+            transactions: {
+              orderBy: { createdAt: 'desc' }
+            }
+          }
+        }
+      }
+    });
+
+    const userId = user.id;
 
     // หา coin balance ของ user
     let coinBalance = await prisma.coinBalance.findUnique({
       where: { userId },
     });
+
 
     // ถ้าไม่มี coin balance ให้สร้างใหม่
     if (!coinBalance) {
