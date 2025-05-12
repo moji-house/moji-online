@@ -30,7 +30,7 @@ export async function POST(request) {
       where: { email: session.user.email },
       include: { roles: true }
     });
-
+    
     if (!user) {
       // Create user if they don't exist yet
       const randomPassword = crypto.randomBytes(32).toString('hex');
@@ -42,7 +42,8 @@ export async function POST(request) {
           password: randomPassword, // Random secure password for OAuth users
           roles: {
             create: [{ role: role }]
-          }
+          },
+          avatar: session.user.image
         },
         include: { roles: true }
       });
