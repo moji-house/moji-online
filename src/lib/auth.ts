@@ -16,32 +16,41 @@ export const authOptions: NextAuthOptions = {
         params: {
           prompt: "consent",
           access_type: "offline",
-          response_type: "code"
-        }
-      }
-    })
+          response_type: "code",
+        },
+      },
+    }),
   ],
   callbacks: {
-    async session({ session, user }: { session: any; user: any }) {
+    async session({
+      session,
+      user,
+      token,
+    }: {
+      session: any;
+      user: any;
+      token: any;
+    }) {
       if (session.user) {
-        session.user.id = user.id;
+        session.user.id = user?.id || token?.id || null;
       }
       return session;
     },
     async jwt({ token, user }) {
+      console.log(token, "user", user);
       if (user) {
         token.id = user.id;
       }
       return token;
-    }
+    },
   },
   pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error',
+    signIn: "/auth/signin",
+    error: "/auth/error",
   },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
-}; 
+};

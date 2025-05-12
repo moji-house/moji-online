@@ -67,13 +67,15 @@ export async function GET(request) {
         posterName ? {
           user: {
             OR: [
-              { firstName: { contains: posterName, mode: "insensitive" } },
+              { firstName: { contains: posterName.split(" ")[0], mode: "insensitive" } },
               { lastName: { contains: posterName, mode: "insensitive" } }
             ]
           }
         } : {}
       ]
     };
+
+    console.log("Search parameters:", {posterName});
 
     // Get properties with all necessary data
     const properties = await prisma.property.findMany({
