@@ -32,11 +32,13 @@ export async function POST(request) {
 
     if (!user) {
       // Create user if they don't exist yet
+      const randomPassword = crypto.randomBytes(32).toString('hex');
       user = await prisma.user.create({
         data: {
           email: session.user.email,
           firstName: session.user.name?.split(' ')[0] || '',
           lastName: session.user.name?.split(' ').slice(1).join(' ') || '',
+          password: randomPassword, // Random secure password for OAuth users
           roles: {
             create: [{ role: role }]
           }
