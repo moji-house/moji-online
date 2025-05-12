@@ -8,12 +8,11 @@ import { FaUserCircle } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { useUserProfile } from "@/context/UserProfileContext";
 
-
 export default function EditProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { userProfiles } = useUserProfile();
-  
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -33,20 +32,18 @@ export default function EditProfilePage() {
 
   const [previewImages, setPreviewImages] = useState({
     avatar: null,
-    backgroundImage: null
+    backgroundImage: null,
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [existingImages, setExistingImages] = useState([]);
-  const [existingDocuments, setExistingDocuments] = useState([]);
   const [userRoles, setUserRoles] = useState([]);
 
-          // หา current user profile
-          const currentUserProfile = userProfiles?.find(
-            (profile) => profile.email === session?.user?.email
-          );
-  
+  // หา current user profile
+  const currentUserProfile = userProfiles?.find(
+    (profile) => profile.email === session?.user?.email
+  );
+
   useEffect(() => {
     // If user is not logged in, redirect to login page
     if (status === "unauthenticated") {
@@ -65,7 +62,6 @@ export default function EditProfilePage() {
           (profile) => profile.email === session?.user?.email
         );
 
-        
         setIsLoading(true);
 
         if (currentUserProfile) {
@@ -93,7 +89,7 @@ export default function EditProfilePage() {
           // ตั้งค่ารูปภาพเดิม
           setPreviewImages({
             avatar: currentUserProfile.avatar || null,
-            backgroundImage: currentUserProfile.backgroundImage || null
+            backgroundImage: currentUserProfile.backgroundImage || null,
           });
         }
       } catch (error) {
@@ -103,15 +99,15 @@ export default function EditProfilePage() {
         setIsLoading(false);
       }
     };
-    
+
     if (session?.user?.email) {
       fetchProfileData();
     }
   }, [status, session, router, userProfiles]);
-  
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     if (type === "checkbox" && name === "showBirthDate") {
       setFormData((prev) => ({ ...prev, [name]: checked }));
     } else if (name === "roles") {
@@ -121,75 +117,77 @@ export default function EditProfilePage() {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
-  
+
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    
+
     if (!files || files.length === 0) {
       return;
     }
-    
+
     try {
       // สร้าง URL สำหรับแสดงตัวอย่างไฟล์
-      const fileUrls = files.map(file => {
-        if (!file || !(file instanceof File)) {
-          return null;
-        }
+      const fileUrls = files
+        .map((file) => {
+          if (!file || !(file instanceof File)) {
+            return null;
+          }
 
-        // ตรวจสอบว่าเป็นไฟล์รูปภาพหรือไม่
-        if (file.type && file.type.startsWith('image/')) {
-          try {
-            const url = URL.createObjectURL(file);
-            return {
-              file,
-              url,
-              isImage: true
-            };
-          } catch (error) {
-            console.error('Error creating URL for image:', error);
+          // ตรวจสอบว่าเป็นไฟล์รูปภาพหรือไม่
+          if (file.type && file.type.startsWith("image/")) {
+            try {
+              const url = URL.createObjectURL(file);
+              return {
+                file,
+                url,
+                isImage: true,
+              };
+            } catch (error) {
+              console.error("Error creating URL for image:", error);
+              return {
+                file,
+                url: null,
+                isImage: true,
+              };
+            }
+          } else {
             return {
               file,
               url: null,
-              isImage: true
+              isImage: false,
             };
           }
-        } else {
-          return {
-            file,
-            url: null,
-            isImage: false
-          };
-        }
-      }).filter(item => item !== null);
-      
+        })
+        .filter((item) => item !== null);
+
       if (fileUrls.length === 0) {
         return;
       }
-      
-      setFormData(prev => ({
+
+      setFormData((prev) => ({
         ...prev,
-        documents: [...prev.documents, ...fileUrls]
+        documents: [...prev.documents, ...fileUrls],
       }));
     } catch (error) {
-      console.error('Error processing files:', error);
-      toast.error('ไม่สามารถสร้างตัวอย่างไฟล์ได้');
+      console.error("Error processing files:", error);
+      toast.error("ไม่สามารถสร้างตัวอย่างไฟล์ได้");
     }
   };
 
   const removeFile = (index) => {
-    setFormData(prev => {
+    setFormData((prev) => {
       const newDocuments = [...prev.documents];
       if (newDocuments[index] && newDocuments[index].url) {
         try {
           URL.revokeObjectURL(newDocuments[index].url);
         } catch (error) {
-          console.error('Error revoking object URL:', error);
+          console.error("Error revoking object URL:", error);
         }
       }
       newDocuments.splice(index, 1);
       return {
         ...prev,
-        documents: newDocuments
+        documents: newDocuments,
       };
     });
   };
@@ -200,11 +198,11 @@ export default function EditProfilePage() {
 
     try {
       // Validate file type
-      if (!file.type.startsWith('image/')) {
+      if (!file.type.startsWith("image/")) {
         toast.error("กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น");
         return;
       }
-      
+
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error("ขนาดไฟล์ต้องไม่เกิน 5MB");
@@ -213,21 +211,21 @@ export default function EditProfilePage() {
 
       // สร้าง URL สำหรับแสดงตัวอย่าง
       const previewUrl = URL.createObjectURL(file);
-      setPreviewImages(prev => ({
+      setPreviewImages((prev) => ({
         ...prev,
-        [type]: previewUrl
+        [type]: previewUrl,
       }));
 
       // อัพเดท formData
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-          [type]: file
-        }));
-      } catch (error) {
-        console.error('Error creating preview:', error);
-        toast.error('ไม่สามารถสร้างตัวอย่างรูปภาพได้');
-      }
-    };
+        [type]: file,
+      }));
+    } catch (error) {
+      console.error("Error creating preview:", error);
+      toast.error("ไม่สามารถสร้างตัวอย่างรูปภาพได้");
+    }
+  };
 
   const validateForm = () => {
     // ตรวจสอบข้อมูลที่จำเป็น
@@ -253,19 +251,16 @@ export default function EditProfilePage() {
       return false;
     }
 
-    // ตรวจสอบว่ามีการเลือกบทบาทอย่างน้อย 1 บทบาท
-    // if (userRoles.length === 0) {
-    //   toast.error("กรุณาเลือกบทบาทอย่างน้อย 1 บทบาท");
-    //   return false;
-    // }
-
     // ตรวจสอบขนาดไฟล์รูปภาพ
     if (formData.avatar && formData.avatar.size > 2 * 1024 * 1024) {
       toast.error("ขนาดไฟล์รูปโปรไฟล์ต้องไม่เกิน 2MB");
       return false;
     }
 
-    if (formData.backgroundImage && formData.backgroundImage.size > 5 * 1024 * 1024) {
+    if (
+      formData.backgroundImage &&
+      formData.backgroundImage.size > 5 * 1024 * 1024
+    ) {
       toast.error("ขนาดไฟล์รูปพื้นหลังต้องไม่เกิน 5MB");
       return false;
     }
@@ -282,7 +277,7 @@ export default function EditProfilePage() {
 
     return true;
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -297,57 +292,52 @@ export default function EditProfilePage() {
 
       // สร้าง FormData object
       const submitData = new FormData();
-      
+
       // เพิ่มข้อมูลพื้นฐาน
-      Object.keys(formData).forEach(key => {
-        if (key !== 'avatar' && key !== 'backgroundImage') {
-          submitData.append(key, formData[key] || '');
+      Object.keys(formData).forEach((key) => {
+        if (key !== "avatar" && key !== "backgroundImage") {
+          submitData.append(key, formData[key] || "");
         }
       });
 
-      // // เพิ่มรูปภาพ (ถ้ามีการเปลี่ยนแปลง)
-      // if (formData.avatar && formData.avatar.startsWith('http')) {
-      //   submitData.append('avatar', formData.avatar);
-      // }
-      // if (formData.backgroundImage && formData.backgroundImage.startsWith('http')) {
-      //   submitData.append('backgroundImage', formData.backgroundImage);
-      // }
-            // เพิ่มรูปภาพโปรไฟล์
-            if (formData.avatar) {
-              submitData.append('avatar', formData.avatar);
-            }
-      
-            // เพิ่มรูปภาพพื้นหลัง
-            if (formData.backgroundImage) {
-              submitData.append('backgroundImage', formData.backgroundImage);
-            }
+      // เพิ่มรูปภาพโปรไฟล์
+      if (formData.avatar) {
+        submitData.append("avatar", formData.avatar);
+      }
+
+      // เพิ่มรูปภาพพื้นหลัง
+      if (formData.backgroundImage) {
+        submitData.append("backgroundImage", formData.backgroundImage);
+      }
 
       // ส่งข้อมูลไปยัง API
-      const response = await fetch(`/api/profile/${currentUserProfile.id}/editprofile`, {
-        method: 'PUT',
-        body: submitData
-      });
+      const response = await fetch(
+        `/api/profile/${currentUserProfile.id}/editprofile`,
+        {
+          method: "PUT",
+          body: submitData,
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'ไม่สามารถอัปเดตโปรไฟล์ได้');
+        throw new Error(errorData.error || "ไม่สามารถอัปเดตโปรไฟล์ได้");
       }
-      
-      const data = await response.json();
-      
-      toast.success('อัปเดตโปรไฟล์สำเร็จ!');
-      setTimeout(() => {
-        router.push('/route/profile/myprofile');
-      }, 1500);
 
+      await response.json();
+
+      toast.success("อัปเดตโปรไฟล์สำเร็จ!");
+      setTimeout(() => {
+        router.push("/route/profile/myprofile");
+      }, 1500);
     } catch (error) {
-      console.error('Error updating profile:', error);
-      toast.error(error.message || 'เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์');
+      console.error("Error updating profile:", error);
+      toast.error(error.message || "เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์");
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   if (status === "loading" || isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -355,11 +345,11 @@ export default function EditProfilePage() {
       </div>
     );
   }
-  
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Edit Profile</h1>
-      
+
       {message && (
         <div
           className={`p-4 mb-6 rounded ${
@@ -371,7 +361,7 @@ export default function EditProfilePage() {
           {message}
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Personal Information */}
         <div className="bg-white p-6 rounded-lg shadow-md">
@@ -401,7 +391,7 @@ export default function EditProfilePage() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => handleImageUpload(e, 'avatar')}
+                  onChange={(e) => handleImageUpload(e, "avatar")}
                   className="hidden"
                   id="avatar-upload"
                 />
@@ -441,7 +431,7 @@ export default function EditProfilePage() {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleImageUpload(e, 'backgroundImage')}
+                onChange={(e) => handleImageUpload(e, "backgroundImage")}
                 className="hidden"
                 id="background-upload"
               />
@@ -475,7 +465,7 @@ export default function EditProfilePage() {
               placeholder="Tell us about yourself..."
             ></textarea>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
@@ -494,7 +484,7 @@ export default function EditProfilePage() {
                 required
               />
             </div>
-            
+
             <div>
               <label
                 htmlFor="lastName"
@@ -513,7 +503,7 @@ export default function EditProfilePage() {
               />
             </div>
           </div>
-          
+
           <div className="mt-4">
             <label
               htmlFor="birthDate"
@@ -549,77 +539,13 @@ export default function EditProfilePage() {
             </div>
           </div>
         </div>
-        
-        {/* Roles */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Roles</h2>
-          <p className="text-sm text-gray-600 mb-3">
-            กรุณาเลือกบทบาทของคุณ
-          </p>
-          
-          <div className="space-y-2">
-            <div className="flex items-center">
-              <input
-                type="radio"
-                id="role-owner"
-                name="roles"
-                value="Owner"
-                checked={userRoles && Array.isArray(userRoles) && userRoles.includes("Owner")}
-                onChange={handleChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-              />
-              <label
-                htmlFor="role-owner"
-                className="ml-2 block text-sm text-gray-700"
-              >
-                Owner
-              </label>
-            </div>
-            
-            <div className="flex items-center">
-              <input
-                type="radio"
-                id="role-agent"
-                name="roles"
-                value="Agent"
-                checked={userRoles && Array.isArray(userRoles) && userRoles.includes("Agent")}
-                onChange={handleChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-              />
-              <label
-                htmlFor="role-agent"
-                className="ml-2 block text-sm text-gray-700"
-              >
-                Agent
-              </label>
-            </div>
-            
-            <div className="flex items-center">
-              <input
-                type="radio"
-                id="role-customer"
-                name="roles"
-                value="Customer"
-                checked={userRoles && Array.isArray(userRoles) && userRoles.includes("Customer")}
-                onChange={handleChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-              />
-              <label
-                htmlFor="role-customer"
-                className="ml-2 block text-sm text-gray-700"
-              >
-                Customer
-              </label>
-            </div>
-          </div>
-        </div>
-        
+
         {/* Education & Work */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">
             Education & Work Experience
           </h2>
-          
+
           <div className="space-y-4">
             <div>
               <label
@@ -638,7 +564,7 @@ export default function EditProfilePage() {
                 placeholder="List your educational background"
               ></textarea>
             </div>
-            
+
             <div>
               <label
                 htmlFor="currentCompany"
@@ -656,7 +582,7 @@ export default function EditProfilePage() {
                 placeholder="Your current workplace"
               />
             </div>
-            
+
             <div>
               <label
                 htmlFor="previousCompanies"
@@ -676,14 +602,17 @@ export default function EditProfilePage() {
             </div>
           </div>
         </div>
-        
+
         {/* Contact Information */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
-          
+
           <div className="space-y-4">
-          <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+            <div>
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Phone Number
               </label>
               <input
@@ -695,9 +624,7 @@ export default function EditProfilePage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="081-234-5678"
               />
-              <p className="mt-1 text-xs text-gray-500">
-                Format: 081-234-5678
-              </p>
+              <p className="mt-1 text-xs text-gray-500">Format: 081-234-5678</p>
             </div>
             <div>
               <label
@@ -716,7 +643,7 @@ export default function EditProfilePage() {
                 required
               />
             </div>
-            
+
             <div>
               <label
                 htmlFor="lineContact"
@@ -736,11 +663,11 @@ export default function EditProfilePage() {
             </div>
           </div>
         </div>
-        
+
         {/* Real Estate Experience */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Real Estate Experience</h2>
-          
+
           <div>
             <label
               htmlFor="realEstateExperience"
@@ -759,52 +686,51 @@ export default function EditProfilePage() {
             ></textarea>
           </div>
         </div>
-        
-              {/* Documents Upload (Only for Owner and Agent) */}
-        {(userRoles.includes("Owner") ||
-          userRoles.includes("Agent")) && (
-                <div className="bg-white p-6 rounded-lg shadow-md">
+
+        {/* Documents Upload (Only for Owner and Agent) */}
+        {(userRoles.includes("Owner") || userRoles.includes("Agent")) && (
+          <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4">
               Professional Documents
             </h2>
-                  <p className="text-sm text-gray-600 mb-3">
-                    Upload certificates, professional licenses, or portfolio images
-                  </p>
-            
-                  <div className="space-y-4">
-                    <div>
+            <p className="text-sm text-gray-600 mb-3">
+              Upload certificates, professional licenses, or portfolio images
+            </p>
+
+            <div className="space-y-4">
+              <div>
                 <label
                   htmlFor="documents"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                        Upload Documents
-                      </label>
-                      <input
-                        type="file"
-                        id="documents"
-                        name="documents"
+                  Upload Documents
+                </label>
+                <input
+                  type="file"
+                  id="documents"
+                  name="documents"
                   onChange={handleFileChange}
-                        multiple
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        accept=".pdf,.jpg,.jpeg,.png"
-                      />
-                      <p className="mt-1 text-xs text-gray-500">
-                        Accepted formats: PDF, JPG, JPEG, PNG (Max 5MB per file)
-                      </p>
-                    </div>
-              
-                    {/* Display currently uploaded documents */}
-                    {formData.documents.length > 0 && (
-                      <div>
+                  multiple
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Accepted formats: PDF, JPG, JPEG, PNG (Max 5MB per file)
+                </p>
+              </div>
+
+              {/* Display currently uploaded documents */}
+              {formData.documents.length > 0 && (
+                <div>
                   <h3 className="text-sm font-medium text-gray-700 mb-2">
                     Uploaded Documents
                   </h3>
-                        <ul className="space-y-2">
+                  <ul className="space-y-2">
                     {formData.documents.map((doc, index) => {
                       if (!doc || !doc.file) {
                         return null;
                       }
-                      
+
                       return (
                         <li
                           key={index}
@@ -812,50 +738,57 @@ export default function EditProfilePage() {
                         >
                           <div className="flex items-center space-x-2">
                             {doc.isImage && doc.url ? (
-                              <img 
-                                src={doc.url} 
-                                alt={`Preview ${index + 1}`} 
+                              <img
+                                src={doc.url}
+                                alt={`Preview ${index + 1}`}
                                 className="w-10 h-10 object-cover rounded"
                                 onError={(e) => {
-                                  console.error('Error loading image preview:', e);
-                                  e.target.src = '/placeholder-image.png';
+                                  console.error(
+                                    "Error loading image preview:",
+                                    e
+                                  );
+                                  e.target.src = "/placeholder-image.png";
                                 }}
                               />
                             ) : (
                               <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
-                                <span className="text-xs text-gray-500">File</span>
+                                <span className="text-xs text-gray-500">
+                                  File
+                                </span>
                               </div>
                             )}
-                            <span className="text-sm truncate">{doc.file.name}</span>
+                            <span className="text-sm truncate">
+                              {doc.file.name}
+                            </span>
                           </div>
                           <button
                             type="button"
                             onClick={() => removeFile(index)}
-                                className="text-red-500 hover:text-red-700"
-                              >
-                                Remove
-                              </button>
-                            </li>
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            Remove
+                          </button>
+                        </li>
                       );
                     })}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
+                  </ul>
                 </div>
               )}
-        
-              {/* Submit Button */}
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-                >
-            {isLoading ? "Updating..." : "Update Profile"}
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
+        )}
+
+        {/* Submit Button */}
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+          >
+            {isLoading ? "Updating..." : "Update Profile"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

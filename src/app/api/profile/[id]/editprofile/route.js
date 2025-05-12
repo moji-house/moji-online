@@ -28,7 +28,6 @@ export async function PUT(request, { params }) {
     const lastName = formData.get('lastName');
     const birthDateStr = formData.get('birthDate');
     const showBirthDate = formData.get('showBirthDate') === 'true';
-    const roles = formData.get('roles');
     const education = formData.get('education');
     const currentCompany = formData.get('currentCompany');
     const previousCompanies = formData.get('previousCompanies');
@@ -90,11 +89,7 @@ export async function PUT(request, { params }) {
         realEstateExperience: { set: realEstateExperience },
         bio: { set: bio },
         ...(avatarUrl && { avatar: { set: avatarUrl } }),
-        ...(backgroundImageUrl && { backgroundImage: { set: backgroundImageUrl } }),
-        roles: {
-          deleteMany: {}, // ลบ roles เก่าทั้งหมด
-          create: roles ? [{ role: roles }] : [] // สร้าง role ใหม่
-        }
+        ...(backgroundImageUrl && { backgroundImage: { set: backgroundImageUrl } })
       },
       include: {
         roles: true
@@ -125,4 +120,4 @@ export async function PUT(request, { params }) {
       { status: 500 }
     );
   }
-} 
+}

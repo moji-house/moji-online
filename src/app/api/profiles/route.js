@@ -1,5 +1,22 @@
 import { NextResponse } from 'next/server';
-import { db } from '../../../lib/db';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+// Utility to convert BigInt to string recursively
+function convertBigIntToString(obj) {
+  if (obj === null || obj === undefined) return obj;
+  if (typeof obj === 'bigint') return obj.toString();
+  if (Array.isArray(obj)) return obj.map(convertBigIntToString);
+  if (typeof obj === 'object') {
+    const newObj = {};
+    for (const key in obj) {
+      newObj[key] = convertBigIntToString(obj[key]);
+    }
+    return newObj;
+  }
+  return obj;
+}
 
 // GET all profiles
 export async function GET(request) {
@@ -7,29 +24,66 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const role = searchParams.get('role');
     const search = searchParams.get('search');
-    const sortBy = searchParams.get('sortBy') || 'votes';
+    const email = searchParams.get('email');
+    const sortBy = searchParams.get('sortBy') || 'createdAt';
     const order = searchParams.get('order') || 'desc';
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '10', 10);
     
-    // In a real application, you would query your database
-    // For now, we'll return mock data
+    // Build the where clause for the query
+    const where = {};
     
-    // Mock implementation - in a real app, this would use your database
-    const profiles = [
-      // Your mock data would go here
-      // This is just a placeholder
-    ];
+    if (role) {
+      where.roles = {
+        some: {
+          role: role
+        }
+      };
+    }
     
-    return NextResponse.json({
+    if (search) {
+      where.OR = [
+        { firstName: { contains: search, mode: 'insensitive' } },
+        { lastName: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } }
+      ];
+    }
+    
+    if (email) {
+      where.email = email;
+    }
+    
+    // Get total count for pagination
+    const total = await prisma.user.count({ where });
+    
+    // Get profiles with pagination
+    const profiles = await prisma.user.findMany({
+      where,
+      include: {
+        roles: true
+      },
+      orderBy: {
+        [sortBy]: order.toLowerCase()
+      },
+      skip: (page - 1) * limit,
+      take: limit
+    });
+    
+    const user = {
       profiles,
       pagination: {
-        total: profiles.length,
+        total,
         page,
         limit,
-        pages: Math.ceil(profiles.length / limit)
+        pages: Math.ceil(total / limit)
       }
-    });
+    };
+
+    // Convert BigInt to string before returning
+    const safeUser = convertBigIntToString(user);
+
+    console.log('Fetched profiles:', safeUser.profiles[0]?.roles);
+    return NextResponse.json(safeUser);
   } catch (error) {
     console.error('Error fetching profiles:', error);
     return NextResponse.json(
