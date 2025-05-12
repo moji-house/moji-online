@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import { PrismaClient } from '@prisma/client';
+import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 const allRoles = ['Owner', 'Agent', 'Customer'];
