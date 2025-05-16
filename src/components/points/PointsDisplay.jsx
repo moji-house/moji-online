@@ -29,7 +29,9 @@ export default function PointsDisplay({ onVoteSubmit, propertyData }) {
 
       const coinDeductionSuccess = await handleCoinDecrement(value, profileId);
       if (!coinDeductionSuccess) {
-        return;
+        return Promise.reject(
+          new Error("Failed to deduct coins for voting")
+        );
       }
 
       const response = await fetch(`/api/properties/${profileId}/vote`, {
