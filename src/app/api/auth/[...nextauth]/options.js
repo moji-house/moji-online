@@ -51,7 +51,7 @@ export const authOptions = {
     async jwt({ token, account, profile }) {
       if (account && profile) {
         token.accessToken = account.access_token;
-        token.id = profile.sub; // Google user ID
+        token.id = profile.sub;
       }
       return token;
     },
@@ -61,8 +61,6 @@ export const authOptions = {
       return session;
     },
     async signIn({ user, account }) {
-      // console.log('Sign-in attempt:', { user, account });
-
       if (account?.provider === 'google') {
         const { id, name, image, email } = user;
         const firstName = name.split(' ')[0] || 'Unknown User';

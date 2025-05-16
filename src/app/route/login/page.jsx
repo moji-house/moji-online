@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import LoginButton from '@/components/auth/LoginButton';
 import LoginFButton from '@/components/auth/LoginFButton';
 import { useRouter } from 'next/navigation';

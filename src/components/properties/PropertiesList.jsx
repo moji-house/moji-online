@@ -15,14 +15,12 @@ export default function PropertyList() {
       try {
         setLoading(true);
         const response = await axios.get("/api/properties");
-        // Sort properties by points in descending order (highest first)
         const sortedProperties = response.data.sort((a, b) => {
-          // If points don't exist, default to 0
           const pointsA = a.points || 0;
           const pointsB = b.points || 0;
-          // Sort in descending order (highest first)
           return pointsB - pointsA;
         });
+        
         setProperties(sortedProperties);
       } catch (err) {
         console.error("Error fetching properties:", err);

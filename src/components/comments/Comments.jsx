@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
@@ -30,12 +29,10 @@ export default function Comments({ propertyId, initialComments = [] }) {
   const [replyContent, setReplyContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // หา current user profile
   const currentUserProfile = userProfiles.find(
     (profile) => profile.email === session?.user?.email
   );
 
-  // สร้างคอมเม้นใหม่
   const handleSubmitComment = async (e) => {
     e.preventDefault();
 

@@ -12,7 +12,6 @@ import {
   FaMapMarkerAlt,
   FaComment,
   FaImages,
-  FaEdit,
   FaClock,
   FaShare,
   FaFacebook,
@@ -20,7 +19,6 @@ import {
   FaLink,
   FaSave,
   FaRegSave,
-  FaFileContract,
 } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -39,7 +37,6 @@ export default function PropertyCard({ property }) {
   const { userProfiles } = useUserProfile();
   const [currentUserProfile, setCurrentUserProfile] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [currentCommentId, setCurrentCommentId] = useState(null);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -52,14 +49,14 @@ export default function PropertyCard({ property }) {
           setPropertyData(data);
           setLikeCount(data.likes?.length || 0);
 
-          const UserProfile = userProfiles.find(
+          const userProfile = userProfiles.find(
             (profile) => profile.email === session?.user?.email
           );
-          setCurrentUserProfile(UserProfile);
+          setCurrentUserProfile(userProfile);
           // ตรวจสอบว่าผู้ใช้ปัจจุบันได้กดไลค์หรือยัง
-          if (UserProfile?.id) {
+          if (userProfile?.id) {
             const isUserLiked = data.likes?.some(
-              (like) => like.userId === UserProfile.id
+              (like) => like.userId === userProfile.id
             );
             setIsLiked(isUserLiked);
           }
@@ -215,12 +212,6 @@ export default function PropertyCard({ property }) {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const handleGenerateDoc = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    router.push(`/route/properties/gentradingdoc?propertyId=${propertyData.id}&userId=${userProfiles?.id}`);
   };
 
   return (

@@ -2,27 +2,19 @@ import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
-import { db } from '@/lib/db';  // ใช้ db instance ที่มีอยู่แล้ว แทนการสร้างใหม่
 
 const prisma = new PrismaClient();
 
-// Helper function to handle file uploads (in a real app, you'd upload to a service like S3)
 async function saveDocuments(files) {
-  // This is a placeholder. In a real app, you would:
-  // 1. Upload the files to a storage service like AWS S3, Cloudinary, etc.
-  // 2. Return the URLs or file information
-  
-  // For now, we'll just return dummy file info
   return files.map((file, index) => ({
     id: `doc-${Date.now()}-${index}`,
     filename: file.name,
-    url: `/dummy-url/${file.name}`, // This would be the actual URL in production
+    url: `/dummy-url/${file.name}`,
     contentType: file.type,
     size: file.size
   }));
 }
 
-// ฟังก์ชันแปลงอาร์เรย์เป็นรูปแบบที่ PostgreSQL ต้องการ
 function formatPgArray(arr) {
   if (!Array.isArray(arr)) {
     return '{}';

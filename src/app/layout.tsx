@@ -8,6 +8,7 @@ import { CoinBalanceProvider } from "../context/CoinBalanceContext";
 import { UserProfileProvider } from "../context/UserProfileContext";
 import { Suspense } from "react";
 import { CoinTransactionsProvider } from "@/context/CoinTransactionsContext";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +43,8 @@ export default function RootLayout({
                   <Header />
                   <main className="container mx-auto px-4 py-0">
                     <div className="max-w-3xl mx-auto">
-                      <div className="space-y-0">{children}</div>{" "}
+                      <div className="space-y-0">{children}</div>
+                      <Toaster />
                     </div>
                   </main>
                 </CoinTransactionsProvider>

@@ -32,7 +32,7 @@ import { useRouter } from "next/navigation";
 import PointsDisplay from "../../../../components/points/PointsDisplay";
 import Comments from "../../../../components/comments/Comments";
 import { useUserProfile } from "@/context/UserProfileContext";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 
 export default function PropertyCard() {
   const { data: session, status } = useSession();
@@ -128,20 +128,26 @@ export default function PropertyCard() {
 
   const shareOnLine = () => {
     const url = `${window.location.origin}/route/post/${property.id}`;
-    window.open(`https://line.me/R/share?url=${encodeURIComponent(url)}`, '_blank');
+    window.open(
+      `https://line.me/R/share?url=${encodeURIComponent(url)}`,
+      "_blank"
+    );
     setShowShareModal(false);
   };
 
   const shareOnFacebook = () => {
     const url = `${window.location.origin}/route/post/${property.id}`;
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      "_blank"
+    );
     setShowShareModal(false);
   };
 
   const copyUrl = () => {
     const url = `${window.location.origin}/route/post/${property.id}`;
     navigator.clipboard.writeText(url).then(() => {
-      alert('คัดลอก URL เรียบร้อยแล้ว');
+      alert("คัดลอก URL เรียบร้อยแล้ว");
       setShowShareModal(false);
     });
   };
@@ -219,7 +225,7 @@ export default function PropertyCard() {
     try {
       setIsDeleting(true);
       const response = await axios.delete(`/api/properties/${property.id}`);
-      
+
       if (response.status === 200) {
         toast.success("ลบประกาศเรียบร้อยแล้ว");
         router.push("/route/properties/myproperties");
@@ -257,11 +263,15 @@ export default function PropertyCard() {
       if (response.ok) {
         const newSavedState = !isSaved;
         setIsSaved(newSavedState);
-        toast.success(newSavedState ? 'บันทึกอสังหาริมทรัพย์เรียบร้อยแล้ว' : 'ยกเลิกการบันทึกเรียบร้อยแล้ว');
+        toast.success(
+          newSavedState
+            ? "บันทึกอสังหาริมทรัพย์เรียบร้อยแล้ว"
+            : "ยกเลิกการบันทึกเรียบร้อยแล้ว"
+        );
       }
     } catch (error) {
       console.error("Error saving property:", error);
-      toast.error('เกิดข้อผิดพลาดในการบันทึก');
+      toast.error("เกิดข้อผิดพลาดในการบันทึก");
     } finally {
       setIsSaving(false);
     }
@@ -284,7 +294,7 @@ export default function PropertyCard() {
               />
             </div>
           )}
-          
+
           {/* แสดงรูปภาพ */}
           {property.images &&
             property.images.map((image, index) => (
@@ -495,7 +505,11 @@ export default function PropertyCard() {
 
         {/* ปุ่มสร้างสัญญาซื้อขาย */}
         <button
-          onClick={() => router.push(`/route/properties/gentradingdoc?propertyId=${property.id}&userId=${currentUserProfile?.id}`)}
+          onClick={() =>
+            router.push(
+              `/route/properties/gentradingdoc?propertyId=${property.id}&userId=${currentUserProfile?.id}`
+            )
+          }
           className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors"
         >
           <FaFileContract className="text-xl" />
@@ -547,7 +561,9 @@ export default function PropertyCard() {
         <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-xl font-bold mb-4">ยืนยันการลบประกาศ</h3>
-            <p className="mb-6">คุณแน่ใจหรือไม่ที่จะลบประกาศนี้? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+            <p className="mb-6">
+              คุณแน่ใจหรือไม่ที่จะลบประกาศนี้? การกระทำนี้ไม่สามารถย้อนกลับได้
+            </p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}

@@ -1,6 +1,5 @@
 "use client";
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
 
 interface RoleSelectionModalProps {
   onRoleSelected: (role: string) => Promise<void>;
