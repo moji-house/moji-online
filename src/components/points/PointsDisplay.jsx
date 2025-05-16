@@ -142,11 +142,17 @@ export default function PointsDisplay({ onVoteSubmit, propertyData }) {
                       return;
                     }
 
-                    handleVote(profile.id, value);
-                    setPropertyPoints((prev) => prev + value);
-                    setCoinBalance((prev) => prev - value);
-                    toast.success("โหวตสำเร็จ");
-                    input.value = "1"; // Reset after voting
+                    handleVote(profile.id, value)
+                      .then(() => {
+                        setPropertyPoints((prev) => prev + value);
+                        setCoinBalance((prev) => prev - value);
+                        toast.success("โหวตสำเร็จ");
+                        input.value = "1"; // Reset after voting
+                      })
+                      .catch((error) => {
+                        console.error("Error during voting:", error);
+                        toast.error("เกิดข้อผิดพลาดในการโหวต");
+                      });
                   }}
                   className="ml-2 px-2 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 disabled:opacity-50"
                   disabled={!session || isVoting}
