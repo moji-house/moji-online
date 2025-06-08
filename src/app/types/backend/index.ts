@@ -1,0 +1,20 @@
+// Export all interfaces
+export type { default as IUser } from './IUser';
+export type { default as IUserRole } from './IUserRole';
+export type { default as IProperty } from './IProperty';
+export type { default as IPropertyImage } from './IPropertyImage';
+export type { default as IPropertyVideo } from './IPropertyVideo';
+export type { default as IPropertyDocument } from './IPropertyDocument';
+export type { default as IVote } from './IVote';
+export type { default as IPropertyVote } from './IPropertyVote';
+export type { default as IComment } from './IComment';
+export type { default as ILike } from './ILike';
+export type { default as ICommentReply } from './ICommentReply';
+export type { default as ILikeComment } from './ILikeComment';
+export type { default as ICoinBalance } from './ICoinBalance';
+export type { default as ICoinTx } from './ICoinTx';
+export type { default as IAccount } from './IAccount';
+export type { default as ISession } from './ISession';
+export type { default as IVerificationToken } from './IVerificationToken';
+export type { default as ITransaction } from './ITransaction';
+export type { PrismaTransactionalClient } from './IPrisma';

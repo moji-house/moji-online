@@ -17,7 +17,21 @@ const nextConfig = {
         hostname: 'lh3.googleusercontent.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/ddvuxyayd/**',
+      },
+    ],
+    domains: [
+      'images.unsplash.com',
+      'randomuser.me',
+      'cloudinary.com',
+      'res.cloudinary.com',
+      'example.com',
+      'localhost'
     ],
   },
 }
+
 module.exports = nextConfig
