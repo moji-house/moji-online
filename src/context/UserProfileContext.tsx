@@ -2,35 +2,15 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-
-export interface IUserProfile {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  currentCompany: string;
-  education: string;
-  previousCompanies: string;
-  realEstateExperience: string;
-  lineContact: string;
-  role: string;
-  votes: number;
-  followers: number;
-  properties: string[];
-  bio: string;
-  avatar: string;
-  backgroundImage: string;
-  isFollowing: boolean;
-}
+import { ISerializedUser } from "@/app/types/frontend";
 
 export interface UserProfileContextType {
-  userProfiles: IUserProfile[];
+  userProfiles: ISerializedUser[];
   isLoading: boolean;
   error: string | null;
   fetchProfiles: () => Promise<void>;
-  handleVote: (userId: string, voteValue: number) => Promise<IUserProfile>;
-  handleFollow: (userId: string) => Promise<IUserProfile>;
+  handleVote: (userId: string, voteValue: number) => Promise<ISerializedUser>;
+  handleFollow: (userId: string) => Promise<ISerializedUser>;
 }
 
 const defaultContextValue: UserProfileContextType = {
@@ -38,15 +18,15 @@ const defaultContextValue: UserProfileContextType = {
   isLoading: false,
   error: null,
   fetchProfiles: async () => { },
-  handleVote: async () => ({} as IUserProfile),
-  handleFollow: async () => ({} as IUserProfile)
+  handleVote: async () => ({} as ISerializedUser),
+  handleFollow: async () => ({} as ISerializedUser)
 };
 
 const UserProfileContext = createContext<UserProfileContextType>(defaultContextValue);
 
 export function UserProfileProvider({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
-  const [userProfiles, setUserProfiles] = useState<IUserProfile[]>([]);
+  const [userProfiles, setUserProfiles] = useState<ISerializedUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 

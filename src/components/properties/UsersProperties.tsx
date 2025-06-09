@@ -7,14 +7,14 @@ import PropertyCard from "@/components/properties/PropertyCard";
 import { FaSpinner } from "react-icons/fa";
 import ISerializedProperty from "@/app/types/frontend";
 
-export default function UsersProperties({ userId, limit }: { userId?: string; limit?: number }) {
+export default async function UsersProperties({ userId, limit }: { userId?: string; limit?: number }) {
   const [properties, setProperties] = useState<ISerializedProperty[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { data: session, status } = useSession();
   const router = useRouter();
   const params = useParams();
-  const id = userId || params.id;
+  const id = userId || (await params).id;
 
   // Memoize sorted properties
   const sortedProperties = useMemo(() => {

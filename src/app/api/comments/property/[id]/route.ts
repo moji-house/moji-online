@@ -7,9 +7,9 @@ import { convertBigIntToString, serializeBigInt } from "@/app/util/serialize";
 import { ISerializedComment } from "@/app/types/frontend";
 
 // GET: ดึง comments ทั้งหมดของ property
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const propertyId = params.id;
+    const propertyId = (await params).id;
 
     if (!propertyId) {
       return NextResponse.json(
@@ -106,9 +106,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // POST: สร้าง comment ใหม่
-export async function POST(request: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }): Promise<NextResponse> {
   try {
-    const propertyId = params.id;
+    const propertyId = (await params).id;
     const session = await getServerSession(authOptions);
 
     // Authentication check
@@ -220,7 +220,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 }
 
 // PUT: อัปเดต comment
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }): Promise<NextResponse> {
   try {
     const session = await getServerSession(authOptions);
 
@@ -336,9 +336,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE: ลบ comment
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const propertyId = params.id;
+    const propertyId = (await params).id;
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {

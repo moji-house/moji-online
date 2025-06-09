@@ -6,10 +6,10 @@ import { serializeBigInt } from "@/app/util/serialize";
 import { IProperty, IUser } from "@/app/types/backend";
 import ISerializedProperty, { ISerializedUser } from "@/app/types/frontend";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
-    const { id: propertyId } = params;
+    const propertyId = (await params).id;
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
 

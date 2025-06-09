@@ -6,10 +6,10 @@ import { serializeBigInt } from "@/app/util/serialize";
 import ICommentReply from "@/app/types/backend/ICommentReply";
 
 // GET: ดึง replies ทั้งหมดของ comment
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Validate property ID
-    const { id } = params;
+    const id = (await params).id;
     if (!id || isNaN(Number(id))) {
       return NextResponse.json(
         { error: "Invalid property ID" },
@@ -115,9 +115,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // POST: สร้าง reply ใหม่
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const propertyId = params.id;
+    const propertyId = (await params).id;
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
@@ -219,7 +219,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   }
 }
 // PUT: อัพเดท reply
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -328,7 +328,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 // DELETE: ลบ reply
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
 

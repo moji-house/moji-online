@@ -6,10 +6,10 @@ import { serializeBigInt } from "@/app/util/serialize";
 import { IComment } from "@/app/types/backend";
 
 // GET: ดึง comments ของผู้ใช้ที่ล็อกอินอยู่
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // ใช้ params.id โดยตรง ไม่ต้อง await
-    const propertyId = params.id;
+    // ใช้ (await params).id โดยตรง ไม่ต้อง await
+    const propertyId = (await params).id;
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
@@ -95,9 +95,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 // POST: สร้าง comment ใหม่
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const propertyId = params.id;
+    const propertyId = (await params).id;
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
@@ -161,9 +161,9 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   }
 }
 // PUT: อัปเดต comment
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const propertyId = params.id;
+    const propertyId = (await params).id;
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
@@ -230,9 +230,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 // DELETE: ลบ comment
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const propertyId = params.id;
+    const propertyId = (await params).id;
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {

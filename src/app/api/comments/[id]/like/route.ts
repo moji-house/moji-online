@@ -14,7 +14,7 @@ export async function POST(request: NextRequest, { params }: {
 }) {
   try {
     // Validate comment ID
-    const { id } = params;
+    const id = (await params).id;
     if (!id || isNaN(Number(id))) {
       return NextResponse.json(
         { error: "Invalid comment ID" },
@@ -150,10 +150,10 @@ export async function POST(request: NextRequest, { params }: {
 }
 
 // GET: ดึง Comment มากับไลค์ 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Validate comment ID
-    const { id } = params;
+    const id = (await params).id;
     if (!id || isNaN(Number(id))) {
       return NextResponse.json(
         { error: "Invalid comment ID" },

@@ -5,9 +5,9 @@ import { authOptions } from "../../../auth/[...nextauth]/options";
 import { PrismaTransactionalClient } from '@/app/types/backend';
 
 // POST: Create a new vote for a property
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const id = (await params).id;
 
     // ดึง session
     const session = await getServerSession(authOptions);

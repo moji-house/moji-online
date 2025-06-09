@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma';
 import { ILike } from '@/app/types/backend';
 
 // POST: เพิ่มการไลค์ comment
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       );
     }
 
-    const { id } = params;
+    const id = (await params).id;
     const replyId = BigInt(id);
 
     // ค้นหาผู้ใช้จากอีเมล
@@ -120,9 +120,9 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 }
 
 // GET: ดึงข้อมูลการไลค์ของ reply
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const id = (await params).id;
     const session = await getServerSession(authOptions);
 
     if (!session) {

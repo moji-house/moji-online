@@ -4,9 +4,9 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from '../../../auth/[...nextauth]/options';
 
 // POST: Create a new like for a property
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const id = (await params).id;
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {

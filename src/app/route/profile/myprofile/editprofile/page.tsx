@@ -7,13 +7,15 @@ import Image from "next/image";
 import { FaUserCircle } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { useUserProfile } from "@/context/UserProfileContext";
+import { IUserRole } from "@/app/types/backend";
+import { EditUserFormData } from "@/app/types/data";
 
 export default function EditProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { userProfiles } = useUserProfile();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<EditUserFormData>({
     firstName: "",
     lastName: "",
     birthDate: "",
@@ -29,15 +31,14 @@ export default function EditProfilePage() {
     backgroundImage: null,
     bio: "",
   });
-
-  const [previewImages, setPreviewImages] = useState({
+  const [previewImages, setPreviewImages] = useState<{ [key: string]: string | null }>({
     avatar: null,
     backgroundImage: null,
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [userRoles, setUserRoles] = useState([]);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
 
   // หา current user profile
   const currentUserProfile = userProfiles?.find(
@@ -58,7 +59,7 @@ export default function EditProfilePage() {
         }
 
         // หา current user profile
-        const currentUserProfile = userProfiles?.find(
+        const currentUserProfile = userProfiles.find(
           (profile) => profile.email === session?.user?.email
         );
 
@@ -67,12 +68,12 @@ export default function EditProfilePage() {
         if (currentUserProfile) {
           // แยก roles ออกมาเก็บแยก
           const roles = currentUserProfile.roles || [];
-          setUserRoles(roles);
+          setUserRoles(roles.map(({ role }) => role));
 
           setFormData({
             firstName: currentUserProfile.firstName || "",
             lastName: currentUserProfile.lastName || "",
-            birthDate: currentUserProfile.birthDate || "",
+            birthDate: currentUserProfile?.birthDate?.toLocaleString() || "",
             showBirthDate: currentUserProfile.showBirthDate || false,
             education: currentUserProfile.education || "",
             currentCompany: currentUserProfile.currentCompany || "",
@@ -81,8 +82,8 @@ export default function EditProfilePage() {
             phone: currentUserProfile.phone || "",
             lineContact: currentUserProfile.lineContact || "",
             realEstateExperience: currentUserProfile.realEstateExperience || "",
-            avatar: currentUserProfile.avatar || null,
-            backgroundImage: currentUserProfile.backgroundImage || null,
+            avatar: null,
+            backgroundImage: null,
             bio: currentUserProfile.bio || "",
           });
 
@@ -105,7 +106,7 @@ export default function EditProfilePage() {
     }
   }, [status, session, router, userProfiles]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
 
     if (type === "checkbox" && name === "showBirthDate") {
@@ -117,9 +118,8 @@ export default function EditProfilePage() {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
-
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
 
     if (!files || files.length === 0) {
       return;
@@ -166,7 +166,7 @@ export default function EditProfilePage() {
 
       setFormData((prev) => ({
         ...prev,
-        documents: [...prev.documents, ...fileUrls],
+        documents: [...(prev.documents || []), ...fileUrls],
       }));
     } catch (error) {
       console.error("Error processing files:", error);
@@ -174,9 +174,9 @@ export default function EditProfilePage() {
     }
   };
 
-  const removeFile = (index) => {
+  const removeFile = (index: number) => {
     setFormData((prev) => {
-      const newDocuments = [...prev.documents];
+      const newDocuments = [...(prev.documents || [])];
       if (newDocuments[index] && newDocuments[index].url) {
         try {
           URL.revokeObjectURL(newDocuments[index].url);
@@ -192,8 +192,8 @@ export default function EditProfilePage() {
     });
   };
 
-  const handleImageUpload = async (e, type) => {
-    const file = e.target.files[0];
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     try {
@@ -268,7 +268,7 @@ export default function EditProfilePage() {
     // ตรวจสอบขนาดไฟล์เอกสาร
     if (formData.documents && formData.documents.length > 0) {
       for (const doc of formData.documents) {
-        if (doc.size > 5 * 1024 * 1024) {
+        if (doc instanceof File && doc.size > 5 * 1024 * 1024) {
           toast.error("ขนาดไฟล์เอกสารต้องไม่เกิน 5MB");
           return false;
         }
@@ -278,7 +278,7 @@ export default function EditProfilePage() {
     return true;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage("");
@@ -290,13 +290,27 @@ export default function EditProfilePage() {
         return;
       }
 
+      // ตรวจสอบว่า currentUserProfile มีค่าหรือไม่
+      if (!currentUserProfile?.id) {
+        toast.error("ไม่พบข้อมูลผู้ใช้");
+        setIsLoading(false);
+        return;
+      }
+
       // สร้าง FormData object
       const submitData = new FormData();
 
       // เพิ่มข้อมูลพื้นฐาน
       Object.keys(formData).forEach((key) => {
-        if (key !== "avatar" && key !== "backgroundImage") {
-          submitData.append(key, formData[key] || "");
+        if (key !== "avatar" && key !== "backgroundImage" && key !== "documents") {
+          const value = formData[key as keyof typeof formData];
+          if (typeof value === "string") {
+            submitData.append(key, value || "");
+          } else if (typeof value === "boolean") {
+            submitData.append(key, value.toString());
+          } else if (Array.isArray(value)) {
+            submitData.append(key, JSON.stringify(value));
+          }
         }
       });
 
@@ -330,7 +344,7 @@ export default function EditProfilePage() {
       setTimeout(() => {
         router.push("/route/profile/myprofile");
       }, 1500);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating profile:", error);
       toast.error(error.message || "เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์");
     } finally {
@@ -352,11 +366,10 @@ export default function EditProfilePage() {
 
       {message && (
         <div
-          className={`p-4 mb-6 rounded ${
-            message.includes("success")
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}
+          className={`p-4 mb-6 rounded ${message.includes("success")
+            ? "bg-green-100 text-green-700"
+            : "bg-red-100 text-red-700"
+            }`}
         >
           {message}
         </div>
@@ -460,7 +473,7 @@ export default function EditProfilePage() {
               name="bio"
               value={formData.bio}
               onChange={handleChange}
-              rows="3"
+              rows={3}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Tell us about yourself..."
             ></textarea>
@@ -559,7 +572,7 @@ export default function EditProfilePage() {
                 name="education"
                 value={formData.education}
                 onChange={handleChange}
-                rows="3"
+                rows={3}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="List your educational background"
               ></textarea>
@@ -595,7 +608,7 @@ export default function EditProfilePage() {
                 name="previousCompanies"
                 value={formData.previousCompanies}
                 onChange={handleChange}
-                rows="3"
+                rows={3}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="List your previous workplaces"
               ></textarea>
@@ -680,7 +693,7 @@ export default function EditProfilePage() {
               name="realEstateExperience"
               value={formData.realEstateExperience}
               onChange={handleChange}
-              rows="4"
+              rows={4}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Describe your experience in the real estate industry"
             ></textarea>
@@ -720,7 +733,7 @@ export default function EditProfilePage() {
               </div>
 
               {/* Display currently uploaded documents */}
-              {formData.documents.length > 0 && (
+              {formData.documents && formData.documents.length > 0 && (
                 <div>
                   <h3 className="text-sm font-medium text-gray-700 mb-2">
                     Uploaded Documents
@@ -747,7 +760,7 @@ export default function EditProfilePage() {
                                     "Error loading image preview:",
                                     e
                                   );
-                                  e.target.src = "/placeholder-image.png";
+                                  (e.target as HTMLImageElement).src = "/placeholder-image.png";
                                 }}
                               />
                             ) : (

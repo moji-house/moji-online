@@ -5,10 +5,10 @@ import prisma from "@/lib/prisma";
 import { serializeBigInt } from "@/app/util/serialize";
 
 // GET: ดึงข้อมูลอสังหาริมทรัพย์ของผู้ใช้
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
-    const { id: userId } = params;
+    const userId = (await params).id;
 
     if (!session) {
       return NextResponse.json(

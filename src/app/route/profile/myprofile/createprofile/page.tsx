@@ -1,36 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { FaUserCircle } from 'react-icons/fa';
+import { CreateUserFormData } from '@/app/types/data';
 
 export default function CreateProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  interface FormData {
-    firstName: string;
-    lastName: string;
-    birthDate: string;
-    showBirthDate: boolean;
-    roles: string[];
-    education: string;
-    currentCompany: string;
-    previousCompanies: string;
-    email: string;
-    phone: string;
-    lineContact: string;
-    realEstateExperience: string;
-    documents: File[];
-    avatar: File | null;
-    backgroundImage: File | null;
-    bio: string;
-    googleId: string;
-  }
-
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<CreateUserFormData>({
     firstName: '',
     lastName: '',
     birthDate: '',
@@ -85,7 +66,8 @@ export default function CreateProfilePage() {
     // For now, just store the file objects
     setFormData(prev => ({
       ...prev,
-      documents: [...prev.documents, ...files]
+
+      documents: [...prev.documents, ...files.map(file => ({ file, url: '', isImage: false }))]
     }));
   };
   

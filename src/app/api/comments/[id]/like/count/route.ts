@@ -11,7 +11,7 @@ interface Params {
 }
 
 // PUT: อัพเดทจำนวนไลค์ของ Comment
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -21,7 +21,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
       );
     }
 
-    const { id } = params;
+    const id = (await params).id;
 
     if (!id || isNaN(Number(id))) {
       return NextResponse.json(

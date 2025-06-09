@@ -7,14 +7,17 @@ import Image from "next/image";
 import Link from "next/link";
 import UsersProperties from "../../../../../components/properties/UsersProperties";
 import toast from "react-hot-toast";
+import { ISerializedUser } from "@/app/types/frontend";
+import { UserSession } from "@/app/types/auth";
 
 
 export default function UserProfileDetailPage() {
   const { data: session } = useSession();
+  const typedSession = session as UserSession;
   const params = useParams();
   const { id } = params;
 
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState<ISerializedUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -43,7 +46,7 @@ export default function UserProfileDetailPage() {
   // console.log("userProfilesData", userProfilesData);
   // Handle voting
   const handleVote = async (voteValue: number) => {
-    if (!session) {
+    if (!typedSession) {
       toast.error("Please sign in to vote");
       return;
     }
@@ -62,7 +65,7 @@ export default function UserProfileDetailPage() {
 
   // Handle following
   const handleFollow = async () => {
-    if (!session) {
+    if (!typedSession) {
       alert("Please sign in to follow users");
       return;
     }
@@ -304,7 +307,7 @@ export default function UserProfileDetailPage() {
                   onClick={() => handleVote(1)}
                   className="p-1 rounded-full bg-gray-100 hover:bg-gray-200"
                   title="Upvote"
-                  disabled={!session}
+                  disabled={!typedSession}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -328,7 +331,7 @@ export default function UserProfileDetailPage() {
                   onClick={() => handleVote(-1)}
                   className="p-1 rounded-full bg-gray-100 hover:bg-gray-200"
                   title="Downvote"
-                  disabled={!session}
+                  disabled={!typedSession}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -355,7 +358,7 @@ export default function UserProfileDetailPage() {
                     defaultValue="1"
                     className="w-12 px-2 py-1 border border-gray-300 rounded-md text-center"
                     id="vote-input"
-                    disabled={!session}
+                    disabled={!typedSession}
                   />
                   <button
                     onClick={() => {
@@ -367,14 +370,14 @@ export default function UserProfileDetailPage() {
                       }
                     }}
                     className="ml-2 px-2 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 disabled:opacity-50"
-                    disabled={!session}
+                    disabled={!typedSession}
                   >
                     Vote
                   </button>
                 </div>
               </div>
 
-              {!session && (
+              {!typedSession && (
                 <p className="mt-2 text-sm text-gray-500">
                   <Link
                     href="/api/auth/signin"

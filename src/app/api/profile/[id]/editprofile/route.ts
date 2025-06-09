@@ -5,10 +5,10 @@ import { convertBigIntToString } from '@/app/util/serialize';
 import { IUserRole } from '@/app/types/backend';
 
 // PUT: เพื่อแก้ไขข้อมูลของผู้ใช้
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // รอให้ params พร้อมใช้งาน
-    const id = await params.id;
+    const id = await (await params).id;
     const formData = await request.formData();
 
     // ดึงข้อมูลจาก formData

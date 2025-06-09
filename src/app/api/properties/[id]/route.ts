@@ -15,9 +15,9 @@ cloudinary.config({
 });
 
 // GET: Get a single property by ID
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const id = (await params).id;
 
     const property: IProperty = await prisma.property.findUnique({
       where: {
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // PUT: Update a property
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Authentication check
     const session = await getServerSession(authOptions) as UserSession | null;
@@ -92,7 +92,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Validate property ID
-    const { id } = params;
+    const id = (await params).id;
     if (!id) {
       return NextResponse.json({
         error: "ไม่พบรหัสอสังหาริมทรัพย์"
@@ -349,9 +349,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 // DELETE: Delete a property by ID
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const id = (await params).id;
 
     // ตรวจสอบว่ามี id ที่ถูกต้องหรือไม่
     if (!id) {

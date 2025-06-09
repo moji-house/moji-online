@@ -4,10 +4,10 @@ import prisma from '@/lib/prisma';
 import { replacer } from '@/app/util/serialize';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await getServerSession(authOptions);
-    const id = context.params.id;
+    const id = (await params).id;
 
     const user = await prisma.user.findUnique({
       where: {
