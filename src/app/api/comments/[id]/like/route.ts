@@ -162,7 +162,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Get comment with likes
-    const comment: IComment = await prisma.comment.findUnique({
+    const comment = await prisma.comment.findUnique({
       where: { id: commentId },
       select: {
         id: true,
@@ -191,7 +191,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Check if current user has liked this comment
-    const userLiked = comment.likes?.some((like) => like.userId === user.id);
+    const userLiked = comment.likes?.some((like: { userId: string }) => like.userId === user.id);
 
     // Set cache headers for better performance
     const headers = new Headers();
