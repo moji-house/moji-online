@@ -199,7 +199,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json({
       comment: serializeBigInt(comment),
-      likesCount: comment.likesCount || comment.likes?.length,
+      likesCount: comment.likes?.length,
       userLiked: userLiked
     }, { headers });
   } catch (error) {
