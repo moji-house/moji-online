@@ -71,7 +71,12 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider === 'google') {
         const { id, name, image, email } = user;
         const firstName = name?.split(' ')[0] || 'Unknown User';
-        const lastName = name?.split(' ')[1] || ''; 
+        const lastName = name?.split(' ')[1] || '';
+
+        if (!email) {
+          console.error('Email is required for Google sign-in');
+          return false;
+        }
 
         try {
           const existingUser = await prisma.user.findUnique({
