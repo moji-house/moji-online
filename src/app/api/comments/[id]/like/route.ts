@@ -80,16 +80,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
           where: { id: existingLike.id }
         });
 
-        // Update likes count
-        await tx.comment.update({
-          where: { id: commentId },
-          data: {
-            likesCount: {
-              decrement: 1
-            }
-          }
-        });
-
+        // Remove the likesCount update since it doesn't exist in the schema
         isLiked = false;
         message = 'ยกเลิกการไลค์เรียบร้อยแล้ว';
       } else {
@@ -102,32 +93,20 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
           }
         });
 
-        // Update likes count
-        await tx.comment.update({
-          where: { id: commentId },
-          data: {
-            likesCount: {
-              increment: 1
-            }
-          }
-        });
-
+        // Remove the likesCount update since it doesn't exist in the schema
         isLiked = true;
         message = 'ไลค์เรียบร้อยแล้ว';
       }
 
-      // Get updated likes count
-      const updatedComment = await tx.comment.findUnique({
-        where: { id: commentId },
-        select: {
-          likesCount: true
-        }
+      // Get updated likes count by counting the relationship
+      const likesCount = await tx.likeComment.count({
+        where: { commentId }
       });
 
       return {
         isLiked,
         message,
-        likesCount: updatedComment?.likesCount || 0
+        likesCount
       };
     });
 
