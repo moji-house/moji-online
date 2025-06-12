@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
         lineContact: formData.get('lineContact')?.toString() || '',
         avatar: avatar,
         backgroundImage: backgroundImage,
+        password: formData.get('password')?.toString() || '',
         roles: {
           create: JSON.parse(formData.get('roles')?.toString() || '[]').map((role: IUserRole) => ({
             role: role

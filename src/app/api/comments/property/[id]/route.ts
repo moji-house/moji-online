@@ -81,7 +81,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     // แปลง BigInt เป็น string และเพิ่ม likesCount
-    const formattedComments: ISerializedComment = comments.map((comment: IComment) => {
+    const formattedComments = comments.map((comment) => {
       const formattedComment = {
         ...comment,
         likesCount: comment.likes?.length || 0,
@@ -341,7 +341,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const propertyId = (await params).id;
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.user) {
+    if (!session || !session.user?.email) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }

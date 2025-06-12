@@ -29,7 +29,7 @@ import Comments from "../../../../components/comments/Comments";
 import { IUserProfile, useUserProfile } from "@/context/UserProfileContext";
 import { toast } from "react-hot-toast";
 import { formatDate, formatPrice } from "@/app/util/serialize";
-import ISerializedProperty from "@/app/types/frontend";
+import ISerializedProperty, { ISerializedUser } from "@/app/types/frontend";
 
 export default function PropertyCard() {
   const { data: session, status } = useSession();
@@ -39,8 +39,11 @@ export default function PropertyCard() {
   const [property, setProperty] = useState<ISerializedProperty | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [propertyOwner, setPropertyOwner] = useState<IUserProfile | null>(null);
-  const [currentUserProfile, setCurrentUserProfile] = useState<IUserProfile | null>(null);
+  const [propertyOwner, setPropertyOwner] = useState<IUserProfile | null>(
+    null
+  );
+  const [currentUserProfile, setCurrentUserProfile] =
+    useState<IUserProfile | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showDocumentsModal, setShowDocumentsModal] = useState(false);
 
@@ -167,9 +170,9 @@ export default function PropertyCard() {
     try {
       setIsLoading(true);
       const response = await fetch(`/api/properties/${property.id}/like`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           propertyId: property.id,
@@ -204,7 +207,7 @@ export default function PropertyCard() {
     try {
       setIsDeleting(true);
       const response = await fetch(`/api/properties/${property.id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (response.ok) {
@@ -296,10 +299,11 @@ export default function PropertyCard() {
       {/* Property Status and Like Button */}
       <div className="px-4 flex justify-between items-center mb-4">
         <span
-          className={`px-3 py-1 rounded-full text-xs font-semibold ${property.status === "for sale"
-            ? "bg-blue-600 text-white"
-            : "bg-green-600 text-white"
-            }`}
+          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            property.status === "for sale"
+              ? "bg-blue-600 text-white"
+              : "bg-green-600 text-white"
+          }`}
         >
           {property.status === "for sale" ? "For Sale" : "For Rent"}
         </span>

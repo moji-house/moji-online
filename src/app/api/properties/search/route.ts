@@ -23,8 +23,11 @@ export async function GET(request: NextRequest) {
     const city = searchParams.get("city");
     const posterName = searchParams.get("posterName");
 
-    // Build where clause
-    const where = {
+    console.log("Search parameters:", { posterName });
+
+    // Get properties with all necessary data
+    const properties = await prisma.property.findMany({
+      where: {
       AND: [
         searchTerm ? {
           OR: [
@@ -49,13 +52,7 @@ export async function GET(request: NextRequest) {
           }
         } : {}
       ]
-    };
-
-    console.log("Search parameters:", { posterName });
-
-    // Get properties with all necessary data
-    const properties = await prisma.property.findMany({
-      where,
+    },
       include: {
         user: {
           select: {
@@ -113,7 +110,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Get unique cities
-    const propertyCities: IProperty[] = await prisma.property.findMany({
+    const propertyCities = await prisma.property.findMany({
       select: {
         city: true
       },
@@ -126,7 +123,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Get unique posters
-    const users: IUser[] = await prisma.user.findMany({
+    const users = await prisma.user.findMany({
       select: {
         firstName: true,
         lastName: true

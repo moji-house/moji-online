@@ -14,7 +14,7 @@ export async function GET() {
     });
 
     // Transform the data to match the frontend requirements
-    const transformedUsers = users.map((user: IUser) => ({
+    const transformedUsers = users.map((user) => ({
       id: user.id.toString(),
       firstName: user.firstName,
       lastName: user.lastName,
@@ -26,9 +26,9 @@ export async function GET() {
       realEstateExperience: user.realEstateExperience || '',
       lineContact: user.lineContact || '',
       role: user.roles?.[0]?.role || 'Customer',
-      votes: user.votes,
+      votes: user.voteCount,
       followers: user.followers,
-      properties: user.properties,
+      properties: user.propertiesCount,
       bio: user.bio || '',
       avatar: user.avatar || '/default-avatar.png',
       backgroundImage: user.backgroundImage || '/default-background.jpg',

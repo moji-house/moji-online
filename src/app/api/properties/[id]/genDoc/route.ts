@@ -28,7 +28,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Get property data
-    const property: IProperty = await prisma.property.findUnique({
+    const property = await prisma.property.findUnique({
       where: { id: BigInt(propertyId) },
       include: {
         user: {
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Get buyer data (current user)
-    const buyer: IUser = userId ? await prisma.user.findUnique({
+    const buyer = userId ? await prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,

@@ -31,7 +31,9 @@ export default function EditProfilePage() {
     backgroundImage: null,
     bio: "",
   });
-  const [previewImages, setPreviewImages] = useState<{ [key: string]: string | null }>({
+  const [previewImages, setPreviewImages] = useState<{
+    [key: string]: string | null;
+  }>({
     avatar: null,
     backgroundImage: null,
   });
@@ -64,17 +66,16 @@ export default function EditProfilePage() {
         );
 
         setIsLoading(true);
-
+        console.log("currentUserProfile===>", userProfiles, currentUserProfile);
         if (currentUserProfile) {
           // แยก roles ออกมาเก็บแยก
-          const roles = currentUserProfile.roles || [];
-          setUserRoles(roles.map(({ role }) => role));
+          setUserRoles([currentUserProfile.role]);
 
           setFormData({
             firstName: currentUserProfile.firstName || "",
             lastName: currentUserProfile.lastName || "",
-            birthDate: currentUserProfile?.birthDate?.toLocaleString() || "",
-            showBirthDate: currentUserProfile.showBirthDate || false,
+            birthDate: "",
+            showBirthDate: false,
             education: currentUserProfile.education || "",
             currentCompany: currentUserProfile.currentCompany || "",
             previousCompanies: currentUserProfile.previousCompanies || "",
@@ -192,7 +193,10 @@ export default function EditProfilePage() {
     });
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
+  const handleImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: string
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -302,7 +306,11 @@ export default function EditProfilePage() {
 
       // เพิ่มข้อมูลพื้นฐาน
       Object.keys(formData).forEach((key) => {
-        if (key !== "avatar" && key !== "backgroundImage" && key !== "documents") {
+        if (
+          key !== "avatar" &&
+          key !== "backgroundImage" &&
+          key !== "documents"
+        ) {
           const value = formData[key as keyof typeof formData];
           if (typeof value === "string") {
             submitData.append(key, value || "");
@@ -366,10 +374,11 @@ export default function EditProfilePage() {
 
       {message && (
         <div
-          className={`p-4 mb-6 rounded ${message.includes("success")
-            ? "bg-green-100 text-green-700"
-            : "bg-red-100 text-red-700"
-            }`}
+          className={`p-4 mb-6 rounded ${
+            message.includes("success")
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
         >
           {message}
         </div>
@@ -760,7 +769,8 @@ export default function EditProfilePage() {
                                     "Error loading image preview:",
                                     e
                                   );
-                                  (e.target as HTMLImageElement).src = "/placeholder-image.png";
+                                  (e.target as HTMLImageElement).src =
+                                    "/placeholder-image.png";
                                 }}
                               />
                             ) : (

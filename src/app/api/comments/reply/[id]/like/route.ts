@@ -1,17 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/options';
-import prisma from '@/lib/prisma';
-import { ILike } from '@/app/types/backend';
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import prisma from "@/lib/prisma";
+import { ILike } from "@/app/types/backend";
 
 // POST: เพิ่มการไลค์ comment
-export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
       return NextResponse.json(
-        { error: 'กรุณาเข้าสู่ระบบก่อนทำรายการ' },
+        { error: "กรุณาเข้าสู่ระบบก่อนทำรายการ" },
         { status: 401 }
       );
     }
@@ -21,14 +24,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // ค้นหาผู้ใช้จากอีเมล
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
+      where: { email: session.user.email },
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'ไม่พบข้อมูลผู้ใช้' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "ไม่พบข้อมูลผู้ใช้" }, { status: 404 });
     }
 
     // ตรวจสอบว่า reply มีอยู่จริง
@@ -37,20 +37,20 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       include: {
         comment: {
           include: {
-            property: true
-          }
+            property: true,
+          },
         },
         likes: {
           where: {
-            userId: user.id
-          }
-        }
-      }
+            userId: user.id,
+          },
+        },
+      },
     });
 
     if (!reply) {
       return NextResponse.json(
-        { error: 'ไม่พบความคิดเห็นที่ต้องการ' },
+        { error: "ไม่พบความคิดเห็นที่ต้องการ" },
         { status: 404 }
       );
     }
@@ -61,12 +61,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     if (existingLike) {
       // ถ้าเคยกดไลค์แล้ว ให้ยกเลิกการไลค์
       await prisma.likeComment.delete({
-        where: { id: existingLike.id }
+        where: { id: existingLike.id },
       });
 
       return NextResponse.json({
-        message: 'ยกเลิกการไลค์เรียบร้อยแล้ว',
-        isLiked: false
+        message: "ยกเลิกการไลค์เรียบร้อยแล้ว",
+        isLiked: false,
       });
     } else {
       // ถ้ายังไม่เคยกดไลค์ ให้เพิ่มการไลค์
@@ -74,19 +74,19 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         data: {
           user: {
             connect: {
-              id: user.id
-            }
+              id: user.id,
+            },
           },
           reply: {
             connect: {
-              id: replyId
-            }
+              id: replyId,
+            },
           },
           property: {
             connect: {
-              id: reply.comment.property.id
-            }
-          }
+              id: reply.comment.property.id,
+            },
+          },
         },
         include: {
           user: {
@@ -94,42 +94,42 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
               id: true,
               firstName: true,
               lastName: true,
-              avatar: true
-            }
-          }
-        }
+              avatar: true,
+            },
+          },
+        },
       });
 
       return NextResponse.json({
-        message: 'ไลค์เรียบร้อยแล้ว',
+        message: "ไลค์เรียบร้อยแล้ว",
         isLiked: true,
         like: {
           id: newLike.id.toString(),
           userId: newLike.userId,
-          user: newLike.user
-        }
+          user: newLike.user,
+        },
       });
     }
   } catch (error) {
-    console.error('Error in like reply:', error);
+    console.error("Error in like reply:", error);
     return NextResponse.json(
-      { error: 'เกิดข้อผิดพลาดในการทำรายการ' },
+      { error: "เกิดข้อผิดพลาดในการทำรายการ" },
       { status: 500 }
     );
   }
 }
 
 // GET: ดึงข้อมูลการไลค์ของ reply
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const id = (await params).id;
     const session = await getServerSession(authOptions);
 
     if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const reply = await prisma.commentReply.findUnique({
@@ -142,39 +142,36 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                 id: true,
                 avatar: true,
                 firstName: true,
-                lastName: true
-              }
-            }
-          }
-        }
-      }
+                lastName: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!reply) {
-      return NextResponse.json(
-        { error: "Reply not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Reply not found" }, { status: 404 });
     }
 
     // แปลง BigInt เป็น string
     const formattedReply = {
       id: reply.id.toString(),
-      likes: reply.likes.map((like: ILike) => ({
+      likes: reply.likes.map((like) => ({
         id: like.id.toString(),
         userId: like.userId,
         user: {
           id: like.user?.id,
           avatar: like.user?.avatar,
           firstName: like.user?.firstName,
-          lastName: like.user?.lastName
-        }
-      }))
+          lastName: like.user?.lastName,
+        },
+      })),
     };
 
     return NextResponse.json({
       reply: formattedReply,
-      likesCount: reply.likes.length
+      likesCount: reply.likes.length,
     });
   } catch (error) {
     console.error("Error fetching reply likes:", error);
