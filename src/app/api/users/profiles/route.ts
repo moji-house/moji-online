@@ -30,8 +30,8 @@ export async function GET() {
       followers: user.followers,
       properties: user.properties,
       bio: user.bio || '',
-      avatar: user.avatar || '/default-avatar.png',
-      backgroundImage: user.backgroundImage || '/default-background.jpg',
+      avatar: user.avatar || 'https://placehold.co/150x150?text=User',
+      backgroundImage: user.backgroundImage || 'https://placehold.co/1200x400?text=Background',
       isFollowing: false, // This will be handled by the frontend
     }));
 

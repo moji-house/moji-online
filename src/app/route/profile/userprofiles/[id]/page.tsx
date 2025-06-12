@@ -137,7 +137,7 @@ export default function UserProfileDetailPage() {
         {/* Background Image */}
         <div className="h-64 rounded-t-lg overflow-hidden">
           <Image
-            src={profile.backgroundImage || '/default-background.jpg'}
+            src={profile.backgroundImage || 'https://placehold.co/1200x400?text=Background'}
             alt={`${profile.firstName} ${profile.lastName} background`}
             fill
             className="object-cover"
@@ -149,7 +149,7 @@ export default function UserProfileDetailPage() {
           <div className="flex items-end">
             <div className="mr-4 rounded-full border-4 border-white overflow-hidden">
               <Image
-                src={profile.avatar || '/default-avatar.png'}
+                src={profile.avatar || 'https://placehold.co/150x150?text=User'}
                 alt={`${profile.firstName} ${profile.lastName}`}
                 width={120}
                 height={120}

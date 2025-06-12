@@ -118,7 +118,7 @@ async function main() {
               isMain: true
             },
             {
-              imageUrl: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc7?q=80&w=1000&auto=format&fit=crop',
+              imageUrl: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=1000&auto=format&fit=crop',
               isMain: false
             }
           ]
