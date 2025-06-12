@@ -31,7 +31,7 @@ export async function GET() {
       properties: user.propertiesCount,
       bio: user.bio || '',
       avatar: user.avatar || 'https://placehold.co/150x150?text=User',
-      backgroundImage: user.backgroundImage || 'https://placehold.co/1200x400?text=Background',
+      backgroundImage: user.backgroundImage || 'https://placehold.co/1200x400.png?text=Background',
       isFollowing: false, // This will be handled by the frontend
     }));
 

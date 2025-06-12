@@ -29,7 +29,8 @@ const nextConfig = {
       'cloudinary.com',
       'res.cloudinary.com',
       'example.com',
-      'localhost'
+      'localhost',
+      'placehold.co'
     ],
   },
 }

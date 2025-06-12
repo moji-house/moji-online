@@ -10,7 +10,6 @@ import toast from "react-hot-toast";
 import { ISerializedUser } from "@/app/types/frontend";
 import { UserSession } from "@/app/types/auth";
 
-
 export default function UserProfileDetailPage() {
   const { data: session } = useSession();
   const typedSession = session as UserSession;
@@ -54,7 +53,7 @@ export default function UserProfileDetailPage() {
     try {
       // In a real application, you would call an API endpoint
       // For now, we'll update the state directly
-      setProfile((prevProfile: { votes: number; }) => ({
+      setProfile((prevProfile: { votes: number }) => ({
         ...prevProfile,
         votes: prevProfile.votes + voteValue,
       }));
@@ -73,7 +72,7 @@ export default function UserProfileDetailPage() {
     try {
       // In a real application, you would call an API endpoint
       // For now, we'll update the state directly
-      setProfile((prevProfile: { isFollowing: any; followers: number; }) => ({
+      setProfile((prevProfile: { isFollowing: any; followers: number }) => ({
         ...prevProfile,
         isFollowing: !prevProfile.isFollowing,
         followers: prevProfile.isFollowing
@@ -137,7 +136,10 @@ export default function UserProfileDetailPage() {
         {/* Background Image */}
         <div className="h-64 rounded-t-lg overflow-hidden">
           <Image
-            src={profile.backgroundImage || 'https://placehold.co/1200x400?text=Background'}
+            src={
+              profile.backgroundImage ||
+              "https://placehold.co/1200x400.png?text=Background"
+            }
             alt={`${profile.firstName} ${profile.lastName} background`}
             fill
             className="object-cover"
@@ -149,7 +151,9 @@ export default function UserProfileDetailPage() {
           <div className="flex items-end">
             <div className="mr-4 rounded-full border-4 border-white overflow-hidden">
               <Image
-                src={profile.avatar || 'https://placehold.co/150x150?text=User'}
+                src={
+                  profile.avatar || "https://placehold.co/150x150.png?text=User"
+                }
                 alt={`${profile.firstName} ${profile.lastName}`}
                 width={120}
                 height={120}
@@ -163,12 +167,13 @@ export default function UserProfileDetailPage() {
               <p className="text-lg opacity-90">{profile.company}</p>
               <div className="mt-2">
                 <span
-                  className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${profile.roles?.[0]?.role === "Owner"
-                    ? "bg-purple-100 text-purple-800"
-                    : profile.roles?.[0]?.role === "Agent"
+                  className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
+                    profile.roles?.[0]?.role === "Owner"
+                      ? "bg-purple-100 text-purple-800"
+                      : profile.roles?.[0]?.role === "Agent"
                       ? "bg-blue-100 text-blue-800"
                       : "bg-green-100 text-green-800"
-                    }`}
+                  }`}
                 >
                   {profile.roles?.[0]?.role || "Visitor"}
                 </span>
@@ -178,16 +183,18 @@ export default function UserProfileDetailPage() {
             <div className="flex space-x-3">
               <button
                 onClick={handleFollow}
-                className={`px-4 py-2 rounded-md font-medium ${profile.isFollowing
-                  ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
-                  }`}
+                className={`px-4 py-2 rounded-md font-medium ${
+                  profile.isFollowing
+                    ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                }`}
               >
                 {profile.isFollowing ? "Following" : "Follow"}
               </button>
 
               <div className="bg-white bg-opacity-20 rounded-md px-4 py-2 text-blue">
-                <span className="font-bold">{profile.followers || 0}</span> Followers
+                <span className="font-bold">{profile.followers || 0}</span>{" "}
+                Followers
               </div>
             </div>
           </div>
@@ -200,7 +207,9 @@ export default function UserProfileDetailPage() {
           {/* Bio Section */}
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4">About</h2>
-            <p className="text-gray-700 whitespace-pre-line">{profile.bio || "No bio available"}</p>
+            <p className="text-gray-700 whitespace-pre-line">
+              {profile.bio || "No bio available"}
+            </p>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow-md">
@@ -362,7 +371,9 @@ export default function UserProfileDetailPage() {
                   />
                   <button
                     onClick={() => {
-                      const input = document.getElementById("vote-input") as HTMLInputElement;
+                      const input = document.getElementById(
+                        "vote-input"
+                      ) as HTMLInputElement;
                       const value = parseInt(input.value, 10) || 0;
                       if (value > 0 && value <= 10) {
                         handleVote(value);
@@ -414,8 +425,9 @@ export default function UserProfileDetailPage() {
                   <div className="flex items-center mb-2">
                     <div className="h-10 w-10 rounded-full bg-gray-200 overflow-hidden relative mr-3">
                       <Image
-                        src={`https://randomuser.me/api/portraits/${index % 2 ? "women" : "men"
-                          }/${20 + index}.jpg`}
+                        src={`https://randomuser.me/api/portraits/${
+                          index % 2 ? "women" : "men"
+                        }/${20 + index}.jpg`}
                         alt="Reviewer"
                         fill
                         className="object-cover"
@@ -425,7 +437,7 @@ export default function UserProfileDetailPage() {
                       <p className="font-medium">
                         {
                           ["Sarah Johnson", "Michael Lee", "Emma Thompson"][
-                          index
+                            index
                           ]
                         }
                       </p>
@@ -434,10 +446,11 @@ export default function UserProfileDetailPage() {
                           <svg
                             key={starIndex}
                             xmlns="http://www.w3.org/2000/svg"
-                            className={`h-4 w-4 ${starIndex < 4 + (index % 2)
-                              ? "fill-current"
-                              : "text-gray-300"
-                              }`}
+                            className={`h-4 w-4 ${
+                              starIndex < 4 + (index % 2)
+                                ? "fill-current"
+                                : "text-gray-300"
+                            }`}
                             viewBox="0 0 20 20"
                           >
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -524,8 +537,8 @@ export default function UserProfileDetailPage() {
                       {index === 0
                         ? "2 days ago"
                         : index === 1
-                          ? "1 week ago"
-                          : "2 weeks ago"}
+                        ? "1 week ago"
+                        : "2 weeks ago"}
                     </p>
                   </div>
                 </div>
@@ -535,9 +548,7 @@ export default function UserProfileDetailPage() {
         </div>
 
         {/* Right Column - Contact and Stats */}
-        <div className="space-y-6">
-
-        </div>
+        <div className="space-y-6"></div>
       </div>
     </div>
   );

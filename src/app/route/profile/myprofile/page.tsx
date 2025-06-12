@@ -5,7 +5,10 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ICoinBalanceContext, useCoinBalance } from "@/context/CoinBalanceContext";
+import {
+  ICoinBalanceContext,
+  useCoinBalance,
+} from "@/context/CoinBalanceContext";
 import { FaCoins } from "react-icons/fa";
 import MyProperties from "../../../../components/properties/MyProperties";
 // import PropertyCard from "./PropertyCard";
@@ -54,6 +57,7 @@ export default function ProfilePage() {
       const userProfile = Array.isArray(data)
         ? data.find((user) => user.email === session?.user?.email)
         : data;
+      console.log("data====>", userProfile)
 
       if (userProfile) {
         setProfile(userProfile);
@@ -102,7 +106,7 @@ export default function ProfilePage() {
     try {
       // In a real application, you would call an API endpoint
       // For now, we'll update the state directly
-      setProfile((prevProfile: { votes: number; }) => ({
+      setProfile((prevProfile: { votes: number }) => ({
         ...prevProfile,
         votes: prevProfile.votes + voteValue,
       }));
@@ -121,7 +125,7 @@ export default function ProfilePage() {
     try {
       // In a real application, you would call an API endpoint
       // For now, we'll update the state directly
-      setProfile((prevProfile: { isFollowing: any; followers: number; }) => ({
+      setProfile((prevProfile: { isFollowing: any; followers: number }) => ({
         ...prevProfile,
         isFollowing: !prevProfile.isFollowing,
         followers: prevProfile.isFollowing
@@ -191,8 +195,11 @@ export default function ProfilePage() {
         {/* Background Image */}
         <div className="h-64 rounded-t-lg overflow-hidden">
           <Image
-            src={profile.backgroundImage}
-            alt={`${profile.firstName} ${profile.lastName} background`}
+            src={
+              profile.backgroundImage ||
+              "https://placehold.co/1200x400.png?text=Background"
+            }
+            alt={profile.backgroundImage}
             fill
             className="object-cover"
           />
@@ -488,7 +495,9 @@ export default function ProfilePage() {
                   />
                   <button
                     onClick={() => {
-                      const input = document.getElementById("vote-input") as HTMLInputElement;
+                      const input = document.getElementById(
+                        "vote-input"
+                      ) as HTMLInputElement;
                       const value = parseInt(input.value, 10) || 0;
                       if (value > 0 && value <= 10) {
                         handleVote(value);

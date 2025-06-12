@@ -112,7 +112,7 @@ export default function UserProfilesPage() {
             {/* Background Image */}
             <div className="relative h-32">
               <Image
-                src={profile.backgroundImage || 'https://placehold.co/1200x400?text=Background'}
+                src={profile.backgroundImage || 'https://placehold.co/1200x400.png?text=Background'}
                 alt={`${profile.firstName} ${profile.lastName} background`}
                 fill
                 className="object-cover"
