@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma';
 import { replacer } from '@/app/util/serialize';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
     const id = (await params).id;

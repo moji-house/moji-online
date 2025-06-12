@@ -7,11 +7,7 @@ import ILike from '@/app/types/backend/ILike';
 import { serializeBigInt } from '@/app/util/serialize';
 
 // POST: Unlike/Like ของ POST
-export async function POST(request: NextRequest, { params }: {
-  params: {
-    id: string;
-  }
-}) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Validate comment ID
     const id = (await params).id;
