@@ -165,7 +165,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       where: { id: commentId },
       select: {
         id: true,
-        likesCount: true,
         likes: {
           select: {
             id: true,
