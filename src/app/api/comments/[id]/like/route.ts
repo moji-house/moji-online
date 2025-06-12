@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 import { PrismaTransactionalClient } from '@/app/types/backend/IPrisma';
 import ILike from '@/app/types/backend/ILike';
 import { serializeBigInt } from '@/app/util/serialize';
+import { IComment } from '@/app/types/backend';
 
 // POST: Unlike/Like ของ POST
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -161,7 +162,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Get comment with likes
-    const comment = await prisma.comment.findUnique({
+    const comment: IComment = await prisma.comment.findUnique({
       where: { id: commentId },
       select: {
         id: true,
@@ -190,7 +191,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Check if current user has liked this comment
-    const userLiked = comment.likes.some((like: ILike) => like.userId === user.id);
+    const userLiked = comment.likes?.some((like) => like.userId === user.id);
 
     // Set cache headers for better performance
     const headers = new Headers();
@@ -198,7 +199,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json({
       comment: serializeBigInt(comment),
-      likesCount: comment.likesCount || comment.likes.length,
+      likesCount: comment.likesCount || comment.likes?.length,
       userLiked: userLiked
     }, { headers });
   } catch (error) {
