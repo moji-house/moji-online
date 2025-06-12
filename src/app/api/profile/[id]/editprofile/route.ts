@@ -8,7 +8,7 @@ import { IUserRole } from '@/app/types/backend';
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // รอให้ params พร้อมใช้งาน
-    const id = await (await params).id;
+    const id = (await params).id;
     const formData = await request.formData();
 
     // ดึงข้อมูลจาก formData

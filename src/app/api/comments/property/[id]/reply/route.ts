@@ -6,7 +6,10 @@ import { serializeBigInt } from "@/app/util/serialize";
 import ICommentReply from "@/app/types/backend/ICommentReply";
 
 // GET: ดึง replies ทั้งหมดของ comment
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     // Validate property ID
     const id = (await params).id;
@@ -21,8 +24,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Extract query parameters
     const { searchParams } = new URL(request.url);
-    const commentId = searchParams.get('commentId');
-    const includeUserLikes = searchParams.get('includeUserLikes') === 'true';
+    const commentId = searchParams.get("commentId");
+    const includeUserLikes = searchParams.get("includeUserLikes") === "true";
 
     // Get current user if including user likes
     let currentUserId: string | undefined;
@@ -31,7 +34,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       if (session?.user?.email) {
         const user = await prisma.user.findUnique({
           where: { email: session.user.email },
-          select: { id: true }
+          select: { id: true },
         });
         currentUserId = user?.id;
       }
@@ -79,10 +82,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
               },
             },
           },
-        }
+        },
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: "desc" as const,
       },
     };
 
@@ -90,9 +93,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const replies = await prisma.commentReply.findMany(repliesQuery);
 
     // Process replies to match the format used in the Comments component
-    const processedReplies = replies.map((reply: ICommentReply) => {
+    const processedReplies = replies.map((reply) => {
       const likesCount = reply.likes?.length || 0;
-      const isLiked = currentUserId ? reply.likes?.some((like) => like.userId === currentUserId) : false;
+      const isLiked = currentUserId
+        ? reply.likes?.some((like) => like.userId === currentUserId)
+        : false;
 
       return {
         ...reply,
@@ -115,16 +120,16 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 // POST: สร้าง reply ใหม่
-export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const propertyId = (await params).id;
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     let body;
@@ -147,9 +152,16 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     // หา user จาก email ใน session
+    if (!session.user.email) {
+      return NextResponse.json(
+        { error: "User email not found in session" },
+        { status: 400 }
+      );
+    }
+
     const user = await prisma.user.findUnique({
       where: {
-        email: session.user.email,
+        email: session.user.email as string,
       },
       select: {
         id: true,
@@ -157,10 +169,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // ตรวจสอบว่ามี comment หลักอยู่จริงหรือไม่
@@ -219,15 +228,15 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   }
 }
 // PUT: อัพเดท reply
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     let body;
@@ -252,7 +261,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     // หา user จาก email ใน session
     const user = await prisma.user.findUnique({
       where: {
-        email: session.user.email,
+        email: session.user.email as string,
       },
       select: {
         id: true,
@@ -260,10 +269,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // ตรวจสอบว่าเป็นเจ้าของ reply หรือไม่
@@ -275,10 +281,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     if (!existingReply) {
-      return NextResponse.json(
-        { error: "Reply not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Reply not found" }, { status: 404 });
     }
 
     if (existingReply.userId !== user.id) {
@@ -328,15 +331,15 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   }
 }
 // DELETE: ลบ reply
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     let body;
@@ -361,7 +364,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     // หา user จาก email ใน session
     const user = await prisma.user.findUnique({
       where: {
-        email: session.user.email,
+        email: session.user.email as string,
       },
       select: {
         id: true,
@@ -369,10 +372,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // ตรวจสอบว่าเป็นเจ้าของ reply หรือไม่
@@ -384,10 +384,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     });
 
     if (!existingReply) {
-      return NextResponse.json(
-        { error: "Reply not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Reply not found" }, { status: 404 });
     }
 
     if (existingReply.userId !== user.id) {

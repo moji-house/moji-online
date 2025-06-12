@@ -4,29 +4,55 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { ISerializedUser } from "@/app/types/frontend";
 
+export interface IUserProfile {
+  avatar: string;
+  backgroundImage:string;
+  bio: string;
+  currentCompany: string;
+  education: string;
+  email:string;
+  firstName: string;
+  followers: number;
+  id: string;
+  isFollowing: false;
+  lastName: string;
+  lineContact: string;
+  phone: string;
+  previousCompanies: string;
+  properties: number;
+  realEstateExperience: string;
+  role: string;
+  votes: number;
+}
+
 export interface UserProfileContextType {
-  userProfiles: ISerializedUser[];
+  userProfiles: IUserProfile[];
   isLoading: boolean;
   error: string | null;
   fetchProfiles: () => Promise<void>;
-  handleVote: (userId: string, voteValue: number) => Promise<ISerializedUser>;
-  handleFollow: (userId: string) => Promise<ISerializedUser>;
+  handleVote: (userId: string, voteValue: number) => Promise<IUserProfile>;
+  handleFollow: (userId: string) => Promise<IUserProfile>;
 }
 
 const defaultContextValue: UserProfileContextType = {
   userProfiles: [],
   isLoading: false,
   error: null,
-  fetchProfiles: async () => { },
-  handleVote: async () => ({} as ISerializedUser),
-  handleFollow: async () => ({} as ISerializedUser)
+  fetchProfiles: async () => {},
+  handleVote: async () => ({} as IUserProfile),
+  handleFollow: async () => ({} as IUserProfile),
 };
 
-const UserProfileContext = createContext<UserProfileContextType>(defaultContextValue);
+const UserProfileContext =
+  createContext<UserProfileContextType>(defaultContextValue);
 
-export function UserProfileProvider({ children }: { children: React.ReactNode }) {
+export function UserProfileProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { data: session } = useSession();
-  const [userProfiles, setUserProfiles] = useState<ISerializedUser[]>([]);
+  const [userProfiles, setUserProfiles] = useState<IUserProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 

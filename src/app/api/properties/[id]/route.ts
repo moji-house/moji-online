@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const id = (await params).id;
 
-    const property: IProperty = await prisma.property.findUnique({
+    const property = await prisma.property.findUnique({
       where: {
         id: BigInt(id)
       },
@@ -102,12 +102,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const propertyId = BigInt(id);
 
     // Fetch the property to check ownership
-    const property: IProperty = await prisma.property.findUnique({
+    const property = await prisma.property.findUnique({
       where: { id: propertyId },
       select: {
         userId: true,
         images: {
-          select: { id: true, publicId: true }
+          select: { id: true }
         }
       }
     });
@@ -276,7 +276,6 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
           city,
           bedrooms,
           bathrooms,
-          area,
           status: propertyStatus,
           phone: phone || null,
           line_id: lineId || null,

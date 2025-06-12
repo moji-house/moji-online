@@ -16,6 +16,7 @@ export default function UserProfilesPage() {
   // Filter and sort profiles
   const filteredAndSortedProfiles = userProfiles
     .filter((profile) => {
+      console.log("profile==>", profile)
       const fullName = `${profile.firstName} ${profile.lastName}`.toLowerCase();
       const searchMatch =
         fullName.includes(searchTerm.toLowerCase()) ||
@@ -31,7 +32,7 @@ export default function UserProfilesPage() {
       } else if (sortOrder === "followers") {
         return b.followers - a.followers;
       } else if (sortOrder === "properties") {
-        return b.properties.length - a.properties.length;
+        return b.properties - a.properties;
       } else if (sortOrder === "name") {
         return `${a.firstName} ${a.lastName}`.localeCompare(
           `${b.firstName} ${b.lastName}`
@@ -199,8 +200,8 @@ export default function UserProfilesPage() {
                       `vote-input-${profile.id}`
                     ) as HTMLInputElement;
                     const value = parseInt(input?.value, 10) || 0;
-                    if (value > 0 && value <= 10) {
-                      handleVote(profile.id, value);
+                    if (value > 0 && value <= 10 && profile.id) {
+                      handleVote(profile.id.toString(), value);
                       input.value = "1";
                     }
                   }}

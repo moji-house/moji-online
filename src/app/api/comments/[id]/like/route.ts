@@ -3,9 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import prisma from '@/lib/prisma';
 import { PrismaTransactionalClient } from '@/app/types/backend/IPrisma';
-import ILike from '@/app/types/backend/ILike';
 import { serializeBigInt } from '@/app/util/serialize';
-import { IComment } from '@/app/types/backend';
 
 // POST: Unlike/Like ของ POST
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
